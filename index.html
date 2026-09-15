@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KI-AgentenTestplatz — Testbench zur Mensch-KI-Agenten-Interaktion</title>
+  <meta name="description" content="Agentische Testbench für die empirische Forschung zur Interaktion von Menschen mit KI-Agenten (Claude, GPT, Gemini).">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site">
+    <h1>KI-AgentenTestplatz</h1>
+    <div class="untertitel">Testbench für die empirische Forschung zur Interaktion von Menschen mit KI-Agenten</div>
+    <nav class="haupt">
+      <a href="index.html">Start</a>
+      <a href="study.html">Sitzung</a>
+      <a href="admin.html">Forschungsansicht</a>
+      <a href="legal.html">Impressum &amp; Datenschutz</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h2>Worum es geht</h2>
+      <p>
+        Diese Plattform setzt ein experimentelles Untersuchungsdesign zur Zusammenarbeit
+        zwischen Menschen und KI-Agenten (Claude, GPT, Gemini) bei unternehmerischen
+        Entscheidungs- und Führungsaufgaben um. Teilnehmende bearbeiten über mehrere
+        „Geschäftsrunden" hinweg Aufgabenmodule der fiktiven <em>NordTec GmbH</em> gemeinsam
+        mit einem KI-Agenten; erfasst werden Interaktionsverläufe, Vertrauens- und
+        Beanspruchungsmaße sowie Entscheidungsqualität.
+      </p>
+      <p>
+        Konzeption: <a href="KONZEPT.md">KONZEPT.md</a> im Repository ·
+        Wissenschaftliche Leitung: Dr.&nbsp;Pantaleon&nbsp;Fassbender und Dr.&nbsp;Uwe&nbsp;Klein.
+      </p>
+      <div class="hinweis warnung">
+        <strong>Hinweis für Teilnehmende:</strong> Alle Unternehmens- und Personendaten in
+        den Aufgaben sind frei erfunden. Ihre Chat-Eingaben werden zur Bearbeitung an den
+        jeweils gewählten Modellanbieter (Anthropic, OpenAI oder Google) übermittelt —
+        bitte geben Sie keine realen personenbezogenen Daten oder Geschäftsgeheimnisse ein.
+        Details in der <a href="legal.html">Datenschutzerklärung</a>.
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Neue Sitzung anlegen</h2>
+      <p class="status" id="speicherStatus"></p>
+      <form id="setupForm">
+        <label for="code">Teilnahmecode (pseudonym, z.&nbsp;B. „P07")</label>
+        <input type="text" id="code" maxlength="24" autocomplete="off" required>
+
+        <label for="provider">KI-Agent (Anbieter, between-subject)</label>
+        <select id="provider">
+          <option value="anthropic">Claude (Anthropic)</option>
+          <option value="openai">GPT (OpenAI)</option>
+          <option value="gemini">Gemini (Google)</option>
+        </select>
+
+        <label for="autonomyPlan">Autonomiegrad des Agenten</label>
+        <select id="autonomyPlan">
+          <option value="within">within-subject: zwei Blöcke, Reihenfolge randomisiert</option>
+          <option value="niedrig">konstant niedrig (Agent macht nur Vorschläge)</option>
+          <option value="hoch">konstant hoch (Agent erstellt Entwürfe, Mensch kontrolliert)</option>
+        </select>
+
+        <label for="rounds">Anzahl Runden (3–15)</label>
+        <input type="number" id="rounds" min="3" max="15" value="6">
+
+        <button type="submit">Sitzung anlegen und starten</button>
+      </form>
+      <p class="status" id="setupStatus"></p>
+    </section>
+
+    <section>
+      <h2>Die sechs Aufgabenmodule</h2>
+      <div class="karten" id="modulKarten"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Forschungsfragen (Auswahl)</h2>
+      <ul>
+        <li><strong>F1</strong> — Entscheidungsqualität nach Aufgabentyp (Planung, Durchführung, Kontrolle, Führung)</li>
+        <li><strong>F2</strong> — Vertrauensverlauf über die Runden, insbesondere nach sichtbaren Agentenfehlern</li>
+        <li><strong>F3</strong> — Berufsbezogene Persönlichkeitsmerkmale und Qualität der Zusammenarbeit</li>
+        <li><strong>F4</strong> — Anbietervergleich: Claude, GPT, Gemini</li>
+        <li><strong>F5</strong> — Wirkung des Autonomiegrads des Agenten</li>
+        <li><strong>F6</strong> — Rollenverteilung bei sach- vs. personenbezogenen Aufgaben</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site">
+    KI-AgentenTestplatz · Fassbender &amp; Klein ·
+    <a href="legal.html">Impressum &amp; Datenschutz</a> ·
+    <a href="https://github.com/pantaleonfassbender-coder/KI-AgentenTestplatz">Quellcode</a>
+  </footer>
+
+  <script src="js/tasks-data.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/index-page.js"></script>
+</body>
+</html>

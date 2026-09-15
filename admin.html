@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Forschungsansicht — KI-AgentenTestplatz</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site">
+    <h1>KI-AgentenTestplatz</h1>
+    <div class="untertitel">Forschungsansicht: Sitzungen, Bewertungsraster, Export</div>
+    <nav class="haupt">
+      <a href="index.html">Start</a>
+      <a href="study.html">Sitzung</a>
+      <a href="legal.html">Impressum &amp; Datenschutz</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="hinweis">
+      Alle Daten liegen ausschließlich im Browser dieses Geräts. Export als JSON
+      (vollständig, inkl. Interaktionsprotokolle) oder CSV (eine Zeile je Runde).
+      Die Bewertung der Entscheidungsqualität erfolgt hier nachträglich anhand des
+      Bewertungsrasters (1&nbsp;=&nbsp;unzureichend, 5&nbsp;=&nbsp;exzellent).
+    </div>
+
+    <section class="panel">
+      <h2>Sitzungen</h2>
+      <table id="sessionTabelle">
+        <thead>
+          <tr><th>Code</th><th>Anbieter</th><th>Autonomie</th><th>Runden</th><th>Status</th><th>Angelegt</th><th>Aktionen</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <button id="btnExportAllJson" class="sekundaer">Alle Sitzungen als JSON exportieren</button>
+      <button id="btnExportAllCsv" class="sekundaer">Alle Runden als CSV exportieren</button>
+      <p class="status" id="listStatus"></p>
+    </section>
+
+    <section id="detail" class="verborgen">
+      <h2 id="detailTitel"></h2>
+      <div id="detailInhalt"></div>
+    </section>
+  </main>
+
+  <footer class="site">
+    KI-AgentenTestplatz · <a href="legal.html">Impressum &amp; Datenschutz</a>
+  </footer>
+
+  <script src="js/tasks-data.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/surveys.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

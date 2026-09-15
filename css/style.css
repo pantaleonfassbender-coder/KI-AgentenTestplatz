@@ -1,0 +1,255 @@
+/* KI-AgentenTestplatz — Gestaltung. Systemschriften, keine Fremdressourcen. */
+
+:root {
+  --bg: #f7f6f3;
+  --panel: #ffffff;
+  --ink: #1e2430;
+  --muted: #5b6472;
+  --line: #dcd8cf;
+  --accent: #1f4e79;
+  --accent-ink: #ffffff;
+  --soft: #eef1f6;
+  --good: #2e6e46;
+  --warn: #9a6b1f;
+  --bad: #a13a2f;
+  --agent: #f0ede5;
+  --human: #e3ecf5;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #16181d;
+    --panel: #1f232b;
+    --ink: #e8e6e1;
+    --muted: #a3a89f;
+    --line: #363b45;
+    --accent: #7aa7d4;
+    --accent-ink: #10141a;
+    --soft: #262b34;
+    --agent: #2a2e28;
+    --human: #232c36;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: Georgia, "Times New Roman", serif;
+  line-height: 1.55;
+  font-size: 16px;
+}
+
+header.site {
+  border-bottom: 3px double var(--line);
+  padding: 1.4rem 1rem 1rem;
+  text-align: center;
+}
+
+header.site h1 {
+  margin: 0;
+  font-size: 1.7rem;
+  letter-spacing: 0.02em;
+}
+
+header.site .untertitel {
+  color: var(--muted);
+  font-style: italic;
+  margin-top: 0.3rem;
+}
+
+nav.haupt {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.8rem;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-size: 0.9rem;
+}
+
+nav.haupt a { color: var(--accent); text-decoration: none; }
+nav.haupt a:hover { text-decoration: underline; }
+
+main {
+  max-width: 62rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 4rem;
+}
+
+h2 { font-size: 1.3rem; border-bottom: 1px solid var(--line); padding-bottom: 0.3rem; }
+h3 { font-size: 1.1rem; }
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 1.2rem 1.4rem;
+  margin: 1rem 0;
+}
+
+.hinweis {
+  background: var(--soft);
+  border-left: 4px solid var(--accent);
+  padding: 0.7rem 1rem;
+  margin: 1rem 0;
+  font-size: 0.95rem;
+}
+
+.warnung { border-left-color: var(--warn); }
+
+table { border-collapse: collapse; width: 100%; margin: 0.8rem 0; }
+th, td { border: 1px solid var(--line); padding: 0.45rem 0.6rem; text-align: left; vertical-align: top; }
+th { background: var(--soft); font-family: system-ui, sans-serif; font-size: 0.85rem; }
+td { font-size: 0.95rem; }
+
+label { display: block; margin: 0.6rem 0 0.2rem; font-family: system-ui, sans-serif; font-size: 0.9rem; }
+
+input[type="text"], input[type="number"], select, textarea {
+  width: 100%;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: var(--panel);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 0.95rem;
+}
+
+textarea { min-height: 8rem; resize: vertical; }
+
+button {
+  font-family: system-ui, sans-serif;
+  font-size: 0.95rem;
+  padding: 0.55rem 1.2rem;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  cursor: pointer;
+  margin: 0.3rem 0.3rem 0.3rem 0;
+}
+
+button:hover { filter: brightness(1.1); }
+button:disabled { opacity: 0.5; cursor: default; }
+
+button.sekundaer {
+  background: transparent;
+  color: var(--accent);
+}
+
+button.gefahr { background: var(--bad); border-color: var(--bad); color: #fff; }
+
+.kpi-leiste {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  font-family: system-ui, sans-serif;
+  font-size: 0.9rem;
+}
+
+.kpi {
+  background: var(--soft);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  padding: 0.4rem 0.9rem;
+}
+
+.kpi b { font-size: 1.1rem; }
+
+.meta-leiste {
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  color: var(--muted);
+  display: flex;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.6rem;
+}
+
+/* Chat */
+.chatlog {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--panel);
+  max-height: 26rem;
+  overflow-y: auto;
+  padding: 0.8rem;
+  margin: 0.8rem 0;
+}
+
+.msg {
+  margin: 0.5rem 0;
+  padding: 0.6rem 0.9rem;
+  border-radius: 6px;
+  white-space: pre-wrap;
+  font-size: 0.95rem;
+}
+
+.msg.human { background: var(--human); margin-left: 2rem; }
+.msg.agent { background: var(--agent); margin-right: 2rem; }
+
+.msg .wer {
+  font-family: system-ui, sans-serif;
+  font-size: 0.75rem;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.chat-steuer { display: flex; gap: 0.5rem; align-items: flex-end; flex-wrap: wrap; }
+.chat-steuer textarea { flex: 1 1 20rem; min-height: 4rem; }
+.chat-steuer .rollenwahl { flex: 0 0 auto; }
+
+.status {
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  color: var(--muted);
+  min-height: 1.2rem;
+}
+
+.fehler { color: var(--bad); }
+.erfolg { color: var(--good); }
+
+/* Fragebögen */
+.likert { display: flex; gap: 0.7rem; align-items: center; flex-wrap: wrap; margin: 0.2rem 0 0.8rem; font-family: system-ui, sans-serif; font-size: 0.85rem; }
+.likert label { display: inline-flex; align-items: center; gap: 0.25rem; margin: 0; }
+.frage { margin-top: 0.9rem; }
+.frage .text { font-size: 0.98rem; }
+
+input[type="range"] { width: 100%; }
+.range-wert { font-family: system-ui, sans-serif; font-size: 0.85rem; color: var(--muted); }
+
+/* Karten auf der Startseite */
+.karten { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 1rem; }
+.karte { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 1rem 1.2rem; }
+.karte h3 { margin-top: 0; }
+.karte .tag { font-family: system-ui, sans-serif; font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+footer.site {
+  border-top: 1px solid var(--line);
+  margin-top: 3rem;
+  padding: 1.2rem 1rem 2rem;
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-family: system-ui, sans-serif;
+}
+
+footer.site a { color: var(--accent); }
+
+.verborgen { display: none !important; }
+
+.fortschritt {
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  color: var(--muted);
+  text-align: right;
+}
+
+@media (max-width: 480px) {
+  .msg.human { margin-left: 0.5rem; }
+  .msg.agent { margin-right: 0.5rem; }
+}

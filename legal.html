@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Impressum &amp; Datenschutz — KI-AgentenTestplatz</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site">
+    <h1>KI-AgentenTestplatz</h1>
+    <div class="untertitel">Impressum und Datenschutzerklärung</div>
+    <nav class="haupt">
+      <a href="index.html">Start</a>
+      <a href="study.html">Sitzung</a>
+      <a href="admin.html">Forschungsansicht</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h2>Anbieter dieser Seite (Impressum)</h2>
+      <p>
+        Dr. Pantaleon Fassbender<br>
+        16751 NE 5th Street<br>
+        Williston, FL 32696<br>
+        Vereinigte Staaten von Amerika<br>
+        E-Mail: <a href="mailto:pantaleonfassbender@gmail.com">pantaleonfassbender@gmail.com</a>
+      </p>
+      <p>
+        <strong>Wissenschaftliche Leitung des Forschungsvorhabens:</strong><br>
+        Dr. Pantaleon Fassbender und Dr. Uwe Klein<br>
+        (Kontakt zu beiden über die oben genannte E-Mail-Adresse)
+      </p>
+      <p>
+        Der Anbieter ist in den Vereinigten Staaten ansässig. Deutsche Anbieterpflichten
+        nach § 5 DDG und § 18 MStV finden auf diesen Anbieter keine Anwendung; die
+        vorstehenden Angaben werden freiwillig und im Interesse der Transparenz gemacht.
+        Zur Teilnahme an Streitbeilegungsverfahren vor einer
+        Verbraucherschlichtungsstelle besteht keine Verpflichtung und keine Bereitschaft.
+      </p>
+      <p>
+        Diese Plattform dient der empirischen Forschung zur Interaktion von Menschen mit
+        KI-Agenten. Sie ist kein kommerzielles Angebot; es werden keine Produkte oder
+        Dienstleistungen verkauft.
+      </p>
+    </section>
+
+    <section class="panel">
+      <h2>Datenschutzerklärung</h2>
+      <p>
+        Diese Erklärung beschreibt das tatsächliche, im Quellcode nachprüfbare Verhalten
+        der Plattform (Quellcode:
+        <a href="https://github.com/pantaleonfassbender-coder/KI-AgentenTestplatz">GitHub</a>).
+        Soweit die Datenschutz-Grundverordnung (DSGVO) auf die Verarbeitung von Daten von
+        Personen in der EU anwendbar ist (Art.&nbsp;3 Abs.&nbsp;2 DSGVO), ist Verantwortlicher
+        der oben genannte Anbieter. Ein Vertreter in der Union nach Art.&nbsp;27 DSGVO ist
+        unter Berufung auf Art.&nbsp;27 Abs.&nbsp;2 lit.&nbsp;a DSGVO nicht benannt
+        (gelegentliche, nicht umfangreiche Verarbeitung ohne besondere Datenkategorien im
+        Sinne einer risikoträchtigen Verarbeitung).
+      </p>
+
+      <h3>1. Grundprinzip: lokale Speicherung</h3>
+      <p>
+        Alle Studiendaten — Fragebogenantworten, Entscheidungen, Chat-Protokolle,
+        Zeitstempel, Kennzahlen — werden ausschließlich <strong>lokal im Browser des
+        Erhebungsgeräts</strong> gespeichert (localStorage). Es gibt keine Benutzerkonten,
+        keine serverseitige Datenbank und keine Übertragung von Studiendaten an den
+        Anbieter dieser Seite. Der Export erfolgt als lokaler Dateidownload durch die
+        Studienleitung am Erhebungsgerät. Daten können in der Forschungsansicht jederzeit
+        vollständig gelöscht werden; ebenso werden sie gelöscht, wenn die Website-Daten
+        des Browsers gelöscht werden.
+      </p>
+
+      <h3>2. Pseudonymisierung</h3>
+      <p>
+        Teilnehmende werden nur unter einem pseudonymen Teilnahmecode geführt. Name oder
+        Kontaktdaten der Teilnehmenden werden auf der Plattform nicht erfasst. Eine
+        etwaige Zuordnungsliste führt die Studienleitung außerhalb der Plattform; für
+        deren Verwahrung gelten die Zusagen der jeweiligen Einverständniserklärung.
+      </p>
+
+      <h3>3. Übermittlung an KI-Modellanbieter</h3>
+      <p>
+        Kernfunktion der Plattform ist die Zusammenarbeit mit einem KI-Agenten. Wenn eine
+        Nachricht an den Agenten gesendet wird, überträgt eine Serverfunktion
+        (<code>/api/agent</code>, betrieben auf Netlify) den Aufgabenkontext und die
+        Chat-Nachrichten der laufenden Runde an <strong>genau einen</strong> der folgenden
+        Anbieter — je nach Sitzungseinstellung: Anthropic PBC (Claude), OpenAI (GPT) oder
+        Google (Gemini), jeweils mit Sitz in den USA.
+        <strong>Nicht übermittelt</strong> werden: Teilnahmecode, Fragebogenantworten,
+        Bewertungen und alle übrigen Studiendaten.
+      </p>
+      <p>
+        Chat-Eingaben sind für die Modellanbieter einsehbar und können dort nach deren
+        Bedingungen kurzzeitig gespeichert werden. Deshalb gilt für Teilnehmende die
+        ausdrückliche Anweisung, keine realen personenbezogenen Daten und keine
+        Geschäftsgeheimnisse einzugeben; alle Aufgabeninhalte der Simulation sind fiktiv.
+      </p>
+
+      <h3>4. Hosting und Server-Protokolle</h3>
+      <p>
+        Die Seite wird bei Netlify, Inc. (USA) gehostet. Beim Abruf der Seite und beim
+        Aufruf der Serverfunktion verarbeitet Netlify technisch bedingt Verbindungsdaten
+        (u.&nbsp;a. IP-Adresse) in Server-Protokollen. Auf diese Verarbeitung hat der
+        Anbieter dieser Seite keinen inhaltlichen Zugriff über das Übliche hinaus;
+        Rechtsgrundlage ist, soweit die DSGVO anwendbar ist, das berechtigte Interesse am
+        technischen Betrieb (Art.&nbsp;6 Abs.&nbsp;1 lit.&nbsp;f DSGVO).
+      </p>
+
+      <h3>5. Keine Cookies, keine Reichweitenmessung, keine Fremdressourcen</h3>
+      <p>
+        Diese Seite setzt keine Cookies, verwendet keine Analyse- oder Trackingdienste
+        und lädt keine Ressourcen von Drittservern (keine externen Schriften, Skripte
+        oder Stylesheets). Der oben beschriebene Browser-Speicher dient ausschließlich
+        der Studienfunktion.
+      </p>
+
+      <h3>6. Rechte der betroffenen Personen</h3>
+      <p>
+        Soweit die DSGVO anwendbar ist, bestehen die Rechte auf Auskunft (Art.&nbsp;15),
+        Berichtigung (Art.&nbsp;16), Löschung (Art.&nbsp;17), Einschränkung der
+        Verarbeitung (Art.&nbsp;18), Datenübertragbarkeit (Art.&nbsp;20) und Widerspruch
+        (Art.&nbsp;21) sowie das Beschwerderecht bei einer Aufsichtsbehörde
+        (Art.&nbsp;77). Da Studiendaten nur lokal auf dem Erhebungsgerät liegen, richten
+        sich Auskunfts- und Löschersuchen zu einer konkreten Teilnahme an die
+        Studienleitung unter der oben genannten E-Mail-Adresse.
+      </p>
+
+      <h3>7. Änderungen</h3>
+      <p>
+        Wird die Plattform funktional erweitert (z.&nbsp;B. um serverseitige Speicherung im
+        Team-Modus), wird diese Erklärung vor Inbetriebnahme entsprechend angepasst.
+      </p>
+
+      <p class="status">Stand: 15. September 2026</p>
+    </section>
+  </main>
+
+  <footer class="site">
+    KI-AgentenTestplatz · Fassbender &amp; Klein ·
+    <a href="https://github.com/pantaleonfassbender-coder/KI-AgentenTestplatz">Quellcode</a>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sitzung — KI-AgentenTestplatz</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="site">
+    <h1>KI-AgentenTestplatz</h1>
+    <div class="untertitel">Erhebungssitzung</div>
+    <nav class="haupt">
+      <a href="index.html">Start</a>
+      <a href="admin.html">Forschungsansicht</a>
+      <a href="legal.html">Impressum &amp; Datenschutz</a>
+    </nav>
+  </header>
+
+  <main>
+    <p class="status fehler" id="globalFehler"></p>
+
+    <!-- Einverständnis -->
+    <section id="viewConsent" class="panel verborgen">
+      <h2>Teilnahmeinformation und Einverständnis</h2>
+      <ul>
+        <li>Sie bearbeiten mehrere unternehmerische Aufgaben einer <strong>fiktiven</strong> Organisation
+          gemeinsam mit einem KI-Agenten. Sämtliche Unternehmens- und Personendaten in den Aufgaben
+          sind frei erfunden.</li>
+        <li>Erfasst werden Ihre Chat-Eingaben, die Antworten des Agenten, Ihre Entscheidungen,
+          Zeitstempel sowie Ihre Fragebogenantworten. Die Daten werden unter einem pseudonymen
+          Teilnahmecode <strong>ausschließlich lokal auf diesem Gerät</strong> gespeichert.</li>
+        <li>Ihre Chat-Nachrichten werden zur Verarbeitung an den Modellanbieter dieser Sitzung
+          (Anthropic, OpenAI oder Google) übermittelt. Geben Sie daher keine realen
+          personenbezogenen Daten und keine Geschäftsgeheimnisse ein.</li>
+        <li>Die Teilnahme ist freiwillig; Sie können jederzeit ohne Angabe von Gründen abbrechen.</li>
+      </ul>
+      <label class="likert"><input type="checkbox" id="consentCheck">
+        Ich habe die Informationen gelesen und bin mit der Teilnahme einverstanden.</label>
+      <button id="btnConsent" disabled>Weiter zur Vorbefragung</button>
+    </section>
+
+    <!-- Baseline -->
+    <section id="viewBaseline" class="panel verborgen">
+      <h2>Vorbefragung</h2>
+      <p>Bitte geben Sie an, wie sehr die folgenden Aussagen auf Sie zutreffen
+        (1&nbsp;=&nbsp;trifft gar nicht zu, 7&nbsp;=&nbsp;trifft voll zu).</p>
+      <form id="baselineForm"></form>
+      <button id="btnBaseline">Vorbefragung abschließen und Simulation starten</button>
+      <p class="status" id="baselineStatus"></p>
+    </section>
+
+    <!-- Runde -->
+    <section id="viewRound" class="verborgen">
+      <div class="fortschritt" id="rundenFortschritt"></div>
+      <div class="panel">
+        <div class="meta-leiste" id="rundenMeta"></div>
+        <div class="kpi-leiste" id="kpiLeiste"></div>
+        <div class="hinweis" id="kpiDelta"></div>
+        <h2 id="modulTitel"></h2>
+        <p id="modulSzenario"></p>
+        <table id="modulDaten"></table>
+        <div class="hinweis"><strong>Bearbeitungsauftrag:</strong> <span id="modulAuftrag"></span></div>
+      </div>
+
+      <div class="panel">
+        <h3>Zusammenarbeit mit dem Agenten</h3>
+        <div class="chatlog" id="chatlog"></div>
+        <div class="chat-steuer">
+          <div class="rollenwahl">
+            <label for="rolleSelect">Agentenrolle</label>
+            <select id="rolleSelect"></select>
+          </div>
+          <textarea id="chatEingabe" placeholder="Nachricht an den Agenten …"></textarea>
+          <button id="btnSenden">Senden</button>
+        </div>
+        <p class="status" id="chatStatus"></p>
+      </div>
+
+      <div class="panel">
+        <h3>Finale Entscheidung</h3>
+        <p>Formulieren Sie hier Ihr Endergebnis bzw. Ihre finale Entscheidung für diese Runde.
+           Sie — nicht der Agent — verantworten die Abgabe.</p>
+        <textarea id="entscheidung" placeholder="Finale Entscheidung / Endergebnis …"></textarea>
+        <label for="erfolgProb">Wie wahrscheinlich ist es aus Ihrer Sicht, dass sich diese Entscheidung
+          für die NordTec GmbH als richtig erweist? <span class="range-wert" id="erfolgProbWert">50&nbsp;%</span></label>
+        <input type="range" id="erfolgProb" min="0" max="100" value="50">
+        <button id="btnAbgeben">Entscheidung abgeben</button>
+        <p class="status" id="abgabeStatus"></p>
+      </div>
+    </section>
+
+    <!-- Kurzerhebung nach der Runde -->
+    <section id="viewSurvey" class="panel verborgen">
+      <h2>Kurzbefragung zur Runde</h2>
+      <form id="surveyForm"></form>
+      <button id="btnSurvey">Weiter</button>
+      <p class="status" id="surveyStatus"></p>
+    </section>
+
+    <!-- Abschlusserhebung -->
+    <section id="viewFinal" class="panel verborgen">
+      <h2>Abschlussbefragung</h2>
+      <p>Bitte beziehen Sie die folgenden Aussagen auf den KI-Agenten, mit dem Sie
+        in dieser Sitzung gearbeitet haben (1&nbsp;=&nbsp;trifft gar nicht zu, 7&nbsp;=&nbsp;trifft voll zu).</p>
+      <form id="finalForm"></form>
+      <button id="btnFinal">Sitzung abschließen</button>
+      <p class="status" id="finalStatus"></p>
+    </section>
+
+    <!-- Ende -->
+    <section id="viewDone" class="panel verborgen">
+      <h2>Vielen Dank!</h2>
+      <p>Die Sitzung ist abgeschlossen. Die Daten liegen lokal auf diesem Gerät und können
+        von der Studienleitung über die <a href="admin.html">Forschungsansicht</a> exportiert werden.</p>
+      <div class="kpi-leiste" id="doneKpi"></div>
+    </section>
+  </main>
+
+  <footer class="site">
+    KI-AgentenTestplatz · <a href="legal.html">Impressum &amp; Datenschutz</a>
+  </footer>
+
+  <script src="js/tasks-data.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/api-client.js"></script>
+  <script src="js/surveys.js"></script>
+  <script src="js/study.js"></script>
+</body>
+</html>
