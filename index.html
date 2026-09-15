@@ -44,6 +44,62 @@
     </section>
 
     <section class="panel">
+      <h2>Untersuchungsbedingungen, Modelle und Autonomiegrade</h2>
+      <p>Jede Sitzung läuft unter genau einer der fünf folgenden Bedingungen
+        (between-subject). Die eingesetzten Modellversionen werden zusätzlich bei jeder
+        einzelnen Agentenantwort protokolliert.</p>
+      <table>
+        <thead>
+          <tr><th>Bedingung</th><th>Anbieter / Modell (derzeit)</th><th>Charakter</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Claude</td>
+            <td>Anthropic — <code>claude-sonnet-5</code></td>
+            <td>Kommerzielles Frontier-Modell</td>
+          </tr>
+          <tr>
+            <td>GPT</td>
+            <td>OpenAI — <code>gpt-5</code></td>
+            <td>Kommerzielles Frontier-Modell</td>
+          </tr>
+          <tr>
+            <td>Gemini</td>
+            <td>Google — <code>gemini-2.5-flash</code></td>
+            <td>Kommerzielles Modell, auf Geschwindigkeit optimiert</td>
+          </tr>
+          <tr>
+            <td>Open Source</td>
+            <td>Llama&nbsp;3.3&nbsp;70B Instruct — betrieben über Together&nbsp;AI</td>
+            <td>Offenes Modell (Meta, frei verfügbare Gewichte) als Vergleichspunkt zu den kommerziellen Anbietern</td>
+          </tr>
+          <tr>
+            <td>Ohne KI (Postkorb)</td>
+            <td>—</td>
+            <td>Kontrollbedingung: dieselben Aufgaben werden eigenständig bearbeitet, wie ein Posteingang ohne Assistenz; es wird nichts an Modellanbieter übermittelt</td>
+          </tr>
+        </tbody>
+      </table>
+      <h3>Autonomiegrade des Agenten</h3>
+      <ul>
+        <li><strong>Niedrig:</strong> Der Agent macht ausschließlich Vorschläge und
+          beantwortet Fragen; jede Festlegung trifft die menschliche Person. Kein
+          fertiges Endprodukt vom Agenten.</li>
+        <li><strong>Hoch:</strong> Der Agent erstellt zu Rundenbeginn eigenständig einen
+          vollständigen, abgabefertigen Entwurf; die menschliche Person prüft, korrigiert
+          und verantwortet die Abgabe.</li>
+        <li><strong>Within-subject:</strong> Jede Person durchläuft beide Grade in zwei
+          Blöcken, die Reihenfolge wird randomisiert — der Standardmodus für
+          Vergleiche innerhalb derselben Person.</li>
+      </ul>
+      <p>In jeder Runde stehen zusätzlich drei Agentenrollen zur Wahl: <strong>Analyst</strong>
+        (erarbeitet Analysen und Entwürfe), <strong>Kritiker</strong> (prüft Entwürfe auf
+        Schwächen, liefert keine Lösungen) und <strong>Koordinator</strong> (strukturiert
+        das Vorgehen). Die Rollen nutzen dasselbe Modell und kommunizieren nicht
+        untereinander.</p>
+    </section>
+
+    <section class="panel">
       <h2>Neue Sitzung anlegen</h2>
       <p class="status" id="speicherStatus"></p>
       <form id="setupForm">
