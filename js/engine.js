@@ -92,7 +92,7 @@ window.Engine = (function () {
     const dec = bigrams(decision);
     if (dec.size === 0) return null;
     const agent = bigrams(agentTexts.join(" \n "));
-    if (agent.size === 0) return 0;
+    if (agent.size === 0) return null; // keine Agentenbeitraege (z. B. Postkorb-Bedingung)
     let hits = 0;
     dec.forEach((b) => { if (agent.has(b)) hits++; });
     return Math.round((hits / dec.size) * 100) / 100;

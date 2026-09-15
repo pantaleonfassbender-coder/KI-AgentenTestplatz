@@ -84,4 +84,11 @@ window.Surveys = {
     { id: "momente", label: "Gab es kritische Momente — Vertrauensbrüche oder positive Überraschungen? Welche?" },
     { id: "aufgaben", label: "Welche Unterschiede haben Sie zwischen den Aufgabentypen wahrgenommen (z. B. Analyse- vs. Führungsaufgaben)?" },
   ],
+
+  /* Offene Fragen fuer die Postkorb-Kontrollbedingung (Bearbeitung ohne KI). */
+  finalOpenQuestionsControl: [
+    { id: "vorgehen", label: "Wie sind Sie bei der eigenständigen Bearbeitung vorgegangen — was hat Ihnen geholfen, was gefehlt?" },
+    { id: "momente", label: "Gab es kritische Momente — besonders schwierige oder besonders gut laufende Aufgaben? Welche?" },
+    { id: "aufgaben", label: "Welche Unterschiede haben Sie zwischen den Aufgabentypen wahrgenommen (z. B. Analyse- vs. Führungsaufgaben)?" },
+  ],
 };

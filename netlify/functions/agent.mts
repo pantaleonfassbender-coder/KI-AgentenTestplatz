@@ -4,6 +4,8 @@
    ->               { text, model, provider, latencyMs, usage? }
    Schluessel via Netlify-Env (bzw. Netlify AI Gateway): ANTHROPIC_API_KEY / OPENAI_API_KEY /
    GEMINI_API_KEY. Modelle ueberschreibbar via ANTHROPIC_MODEL / OPENAI_MODEL / GEMINI_MODEL.
+   Vierter Anbieter "opensource": beliebiger OpenAI-kompatibler Endpunkt fuer offene Modelle
+   (z. B. Ollama, vLLM, Groq, Together) via OSS_BASE_URL + OSS_MODEL, optional OSS_API_KEY.
    Zeitbudget 22 s (synchrone Netlify Functions brechen bei max. 26 s ab). */
 
 const MAX_MESSAGES = 40;
@@ -16,6 +18,7 @@ const MODELS: Record<string, string> = {
   anthropic: process.env.ANTHROPIC_MODEL || "claude-sonnet-5",
   openai: process.env.OPENAI_MODEL || "gpt-5",
   gemini: process.env.GEMINI_MODEL || "gemini-2.5-flash",
+  opensource: process.env.OSS_MODEL || "",
 };
 
 type Msg = { role: "user" | "assistant"; content: string };
@@ -56,23 +59,45 @@ async function callAnthropic(system: string, messages: Msg[], maxTokens: number)
   return { text, model: data.model || MODELS.anthropic, usage: data.usage || null };
 }
 
-async function callOpenAI(system: string, messages: Msg[], maxTokens: number) {
-  const key = process.env.OPENAI_API_KEY;
-  if (!key) throw new Error("OPENAI_API_KEY fehlt (Netlify-Env oder AI Gateway).");
-  const base = process.env.OPENAI_BASE_URL || "https://api.openai.com";
-  const res = await fetchWithTimeout(`${base}/v1/chat/completions`, {
+async function callOpenAICompatible(
+  label: string, base: string, key: string | undefined, model: string,
+  system: string, messages: Msg[], maxTokens: number
+) {
+  const headers: Record<string, string> = { "content-type": "application/json" };
+  if (key) headers.authorization = `Bearer ${key}`;
+  const res = await fetchWithTimeout(`${base.replace(/\/$/, "")}/v1/chat/completions`, {
     method: "POST",
-    headers: { "content-type": "application/json", authorization: `Bearer ${key}` },
+    headers,
     body: JSON.stringify({
-      model: MODELS.openai,
+      model,
       max_completion_tokens: maxTokens,
       messages: [{ role: "system", content: system }, ...messages],
     }),
   });
-  if (!res.ok) throw new Error(`OpenAI ${res.status}: ${(await res.text()).slice(0, 300)}`);
+  if (!res.ok) throw new Error(`${label} ${res.status}: ${(await res.text()).slice(0, 300)}`);
   const data = await res.json();
   const text = data.choices?.[0]?.message?.content || "";
-  return { text, model: data.model || MODELS.openai, usage: data.usage || null };
+  return { text, model: data.model || model, usage: data.usage || null };
+}
+
+async function callOpenAI(system: string, messages: Msg[], maxTokens: number) {
+  const key = process.env.OPENAI_API_KEY;
+  if (!key) throw new Error("OPENAI_API_KEY fehlt (Netlify-Env oder AI Gateway).");
+  const base = process.env.OPENAI_BASE_URL || "https://api.openai.com";
+  return callOpenAICompatible("OpenAI", base, key, MODELS.openai, system, messages, maxTokens);
+}
+
+/* Open-Source-Modell ueber einen beliebigen OpenAI-kompatiblen Endpunkt. */
+async function callOpenSource(system: string, messages: Msg[], maxTokens: number) {
+  const base = process.env.OSS_BASE_URL;
+  const model = MODELS.opensource;
+  if (!base || !model) {
+    throw new Error(
+      "Open-Source-Anbieter nicht konfiguriert: OSS_BASE_URL und OSS_MODEL in der " +
+      "Netlify-Umgebung setzen (OpenAI-kompatibler Endpunkt, optional OSS_API_KEY)."
+    );
+  }
+  return callOpenAICompatible("Open-Source-Endpunkt", base, process.env.OSS_API_KEY, model, system, messages, maxTokens);
 }
 
 async function callGemini(system: string, messages: Msg[], maxTokens: number) {
@@ -126,8 +151,8 @@ export default async (req: Request): Promise<Response> => {
   }
 
   const provider = body.provider;
-  if (provider !== "anthropic" && provider !== "openai" && provider !== "gemini") {
-    return bad(400, "provider muss anthropic, openai oder gemini sein.");
+  if (provider !== "anthropic" && provider !== "openai" && provider !== "gemini" && provider !== "opensource") {
+    return bad(400, "provider muss anthropic, openai, gemini oder opensource sein.");
   }
 
   const system = typeof body.system === "string" ? body.system : "";
@@ -152,7 +177,10 @@ export default async (req: Request): Promise<Response> => {
 
   const started = Date.now();
   try {
-    const call = provider === "anthropic" ? callAnthropic : provider === "openai" ? callOpenAI : callGemini;
+    const call =
+      provider === "anthropic" ? callAnthropic :
+      provider === "openai" ? callOpenAI :
+      provider === "gemini" ? callGemini : callOpenSource;
     const result = await call(system, messages, maxTokens);
     return Response.json({
       provider,

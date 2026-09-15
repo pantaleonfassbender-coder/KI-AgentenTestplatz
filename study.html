@@ -30,8 +30,8 @@
         <li>Erfasst werden Ihre Chat-Eingaben, die Antworten des Agenten, Ihre Entscheidungen,
           Zeitstempel sowie Ihre Fragebogenantworten. Die Daten werden unter einem pseudonymen
           Teilnahmecode <strong>ausschließlich lokal auf diesem Gerät</strong> gespeichert.</li>
-        <li>Ihre Chat-Nachrichten werden zur Verarbeitung an den Modellanbieter dieser Sitzung
-          (Anthropic, OpenAI oder Google) übermittelt. Geben Sie daher keine realen
+        <li id="consentTransfer">Ihre Chat-Nachrichten werden zur Verarbeitung an den
+          Modellanbieter dieser Sitzung übermittelt. Geben Sie daher keine realen
           personenbezogenen Daten und keine Geschäftsgeheimnisse ein.</li>
         <li>Die Teilnahme ist freiwillig; Sie können jederzeit ohne Angabe von Gründen abbrechen.</li>
       </ul>
@@ -63,7 +63,7 @@
         <div class="hinweis"><strong>Bearbeitungsauftrag:</strong> <span id="modulAuftrag"></span></div>
       </div>
 
-      <div class="panel">
+      <div class="panel" id="chatPanel">
         <h3>Zusammenarbeit mit dem Agenten</h3>
         <div class="chatlog" id="chatlog"></div>
         <div class="chat-steuer">
@@ -79,8 +79,8 @@
 
       <div class="panel">
         <h3>Finale Entscheidung</h3>
-        <p>Formulieren Sie hier Ihr Endergebnis bzw. Ihre finale Entscheidung für diese Runde.
-           Sie — nicht der Agent — verantworten die Abgabe.</p>
+        <p id="entscheidungHinweis">Formulieren Sie hier Ihr Endergebnis bzw. Ihre finale
+           Entscheidung für diese Runde. Sie — nicht der Agent — verantworten die Abgabe.</p>
         <textarea id="entscheidung" placeholder="Finale Entscheidung / Endergebnis …"></textarea>
         <label for="erfolgProb">Wie wahrscheinlich ist es aus Ihrer Sicht, dass sich diese Entscheidung
           für die NordTec GmbH als richtig erweist? <span class="range-wert" id="erfolgProbWert">50&nbsp;%</span></label>

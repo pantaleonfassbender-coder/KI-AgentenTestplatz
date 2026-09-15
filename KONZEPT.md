@@ -41,7 +41,7 @@ Teil B.4 des Arbeitspapiers).
 | **L2 Scenario Engine** | Fiktive Organisation „NordTec GmbH" mit rundenübergreifendem Kennzahlenzustand (Budget-, Umsatz-, Risikoindex); Entscheidungen einer Runde verändern das Briefing der Folgerunde (Planspiel-Logik, Teil B.1) |
 | **L3 Task Engine** | Sechs Aufgabenmodule E.1–E.6 als strukturierte Konfigurationsdatensätze (`js/tasks-data.js`) mit Szenariotext, Eingabedaten, Bearbeitungsauftrag, Bewertungsraster und Metadaten (Managementfunktion, sach-/personenbezogen, strukturiert/offen) |
 | **L4 Workflow & Orchestration** | Rundenmaschine in `js/engine.js` + `js/study.js`: Einverständnis → Baseline → n Runden (Briefing → Bearbeitung mit Agent → Entscheidung → Kurzerhebung) → Abschlusserhebung; Autonomiegrad within-subject randomisierbar |
-| **L5 AI Integration** | Eine Netlify Function (`/api/agent`) als Agenten-Abstraktionsschicht mit einheitlicher Schnittstelle zu **Anthropic (Claude)**, **OpenAI (GPT)** und **Google (Gemini)**; drei funktional unterschiedliche Agentenrollen (Analyst, Kritiker, Koordinator) ohne direkte Agent-zu-Agent-Kommunikation — Stufe 2 der HACTLab-Reifegradlogik |
+| **L5 AI Integration** | Eine Netlify Function (`/api/agent`) als Agenten-Abstraktionsschicht mit einheitlicher Schnittstelle zu **Anthropic (Claude)**, **OpenAI (GPT)**, **Google (Gemini)** und einem konfigurierbaren **Open-Source-Endpunkt** (OpenAI-kompatibel, z. B. Ollama/vLLM); drei funktional unterschiedliche Agentenrollen (Analyst, Kritiker, Koordinator) ohne direkte Agent-zu-Agent-Kommunikation — Stufe 2 der HACTLab-Reifegradlogik. Zusätzlich **Postkorb-Kontrollbedingung ohne KI** (eigenständige Bearbeitung derselben Module, Basisvergleich für F1) |
 | **L6 Data Collection** | Vollständiges Interaktionsprotokoll (Prompts, Antworten, Modellversion, Zeitstempel, Latenz), Reliance-Index (heuristisch: n-Gramm-Überlappung Entscheidung ↔ Agentenbeiträge), Kurzerhebung je Runde (Vertrauen, NASA-TLX-Kurzform), Bewertungsraster (Expertenrating 1–5), Baseline- und Abschlussfragebogen |
 | **L7 Data Storage & Management** | Ausschließlich lokal im Browser der Erhebungsstation (`localStorage`), pseudonyme Teilnahmecodes; Export als JSON (vollständig) und CSV (flach, eine Zeile je Runde) über die Forschungsansicht — kein Server-Speicher, keine Datenbank |
 
@@ -66,11 +66,13 @@ Teil B.4 des Arbeitspapiers).
 
 ## 5. Studienablauf (implementiert)
 
-1. **Sitzung anlegen** (Startseite): Teilnahmecode (pseudonym), Anbieter
-   (between-subject: Claude / GPT / Gemini), Autonomieplan (konstant niedrig, konstant
-   hoch oder within-subject randomisiert in zwei Blöcken), Rundenzahl (3–15,
-   Standard 6), Modulfolge (Standard: E1 → E2 → E6 → E3 → E4 → E5; bei mehr Runden
-   Vertiefungsrunden mit fortgeschriebenen Kennzahlen).
+1. **Sitzung anlegen** (Startseite): Teilnahmecode (pseudonym), Bedingung
+   (between-subject: Claude / GPT / Gemini / Open-Source-Modell / **ohne KI,
+   Postkorb-Kontrollbedingung**), Autonomieplan (konstant niedrig, konstant
+   hoch oder within-subject randomisiert in zwei Blöcken; entfällt in der
+   Kontrollbedingung), Rundenzahl (3–15, Standard 6), Modulfolge (Standard:
+   E1 → E2 → E6 → E3 → E4 → E5; bei mehr Runden Vertiefungsrunden mit
+   fortgeschriebenen Kennzahlen).
 2. **Einverständnis:** Hinweis auf fiktive Daten, lokale Speicherung, Übermittlung der
    Chat-Inhalte an den gewählten Modellanbieter; ohne Zustimmung keine Sitzung.
 3. **Baseline:** Kurzskalen zu Leistungsmotivation, Flexibilität, Durchsetzungsstärke,

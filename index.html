@@ -50,11 +50,13 @@
         <label for="code">Teilnahmecode (pseudonym, z.&nbsp;B. „P07")</label>
         <input type="text" id="code" maxlength="24" autocomplete="off" required>
 
-        <label for="provider">KI-Agent (Anbieter, between-subject)</label>
+        <label for="provider">Bedingung: KI-Agent (Anbieter, between-subject) oder Kontrollbedingung</label>
         <select id="provider">
           <option value="anthropic">Claude (Anthropic)</option>
           <option value="openai">GPT (OpenAI)</option>
           <option value="gemini">Gemini (Google)</option>
+          <option value="opensource">Open-Source-Modell (vom Betreiber konfigurierter Endpunkt)</option>
+          <option value="none">Ohne KI — Postkorb-Kontrollbedingung (eigenständige Bearbeitung)</option>
         </select>
 
         <label for="autonomyPlan">Autonomiegrad des Agenten</label>
@@ -73,20 +75,10 @@
     </section>
 
     <section>
-      <h2>Die sechs Aufgabenmodule</h2>
-      <div class="karten" id="modulKarten"></div>
-    </section>
-
-    <section class="panel">
-      <h2>Forschungsfragen (Auswahl)</h2>
-      <ul>
-        <li><strong>F1</strong> — Entscheidungsqualität nach Aufgabentyp (Planung, Durchführung, Kontrolle, Führung)</li>
-        <li><strong>F2</strong> — Vertrauensverlauf über die Runden, insbesondere nach sichtbaren Agentenfehlern</li>
-        <li><strong>F3</strong> — Berufsbezogene Persönlichkeitsmerkmale und Qualität der Zusammenarbeit</li>
-        <li><strong>F4</strong> — Anbietervergleich: Claude, GPT, Gemini</li>
-        <li><strong>F5</strong> — Wirkung des Autonomiegrads des Agenten</li>
-        <li><strong>F6</strong> — Rollenverteilung bei sach- vs. personenbezogenen Aufgaben</li>
-      </ul>
+      <h2>Die sechs Aufgabenmodule im Volltext</h2>
+      <p>Vollständige Darstellung aller Aufgabenmodule: Szenario, Eingabedaten,
+        Bearbeitungsauftrag und Bewertungsraster. Sämtliche Angaben sind fiktiv.</p>
+      <div id="modulListe"></div>
     </section>
   </main>
 

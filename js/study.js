@@ -30,7 +30,18 @@
     }
   }
 
-  const PROVIDER_NAMES = { anthropic: "Claude (Anthropic)", openai: "GPT (OpenAI)", gemini: "Gemini (Google)" };
+  const PROVIDER_NAMES = {
+    anthropic: "Claude (Anthropic)", openai: "GPT (OpenAI)", gemini: "Gemini (Google)",
+    opensource: "Open-Source-Modell", none: "ohne KI (Postkorb)",
+  };
+  const isControl = session.provider === "none";
+
+  // Einverständnistext an die Bedingung anpassen (Kontrollbedingung: keine Übermittlung)
+  if (isControl) {
+    $("consentTransfer").textContent =
+      "In dieser Sitzung arbeiten Sie ohne KI-Unterstützung (Postkorb-Bedingung). " +
+      "Es werden keine Inhalte an Modellanbieter übermittelt.";
+  }
 
   // ---- Likert-Hilfen ----
   function likertRow(name, max) {
@@ -148,7 +159,7 @@
     save();
     renderRound();
     show("viewRound");
-    if (round.autonomy === "hoch" && round.interactions.length === 0) {
+    if (!isControl && round.autonomy === "hoch" && round.interactions.length === 0) {
       autoDraft();
     }
   }
@@ -161,10 +172,13 @@
       `Modul ${mod.id}: ${mod.titel}`,
       `Funktion: ${mod.funktion}`,
       `Aufgabentyp: ${mod.aufgabentyp}`,
-      `Agent: ${PROVIDER_NAMES[session.provider]}`,
-      `Autonomiegrad: ${round.autonomy}`,
-      `Richtwert: ${mod.dauerMin} Min.`,
     ];
+    if (isControl) {
+      metas.push("Bearbeitung: eigenständig, ohne KI (Postkorb-Bedingung)");
+    } else {
+      metas.push(`Agent: ${PROVIDER_NAMES[session.provider]}`, `Autonomiegrad: ${round.autonomy}`);
+    }
+    metas.push(`Richtwert: ${mod.dauerMin} Min.`);
     for (const m of metas) {
       const s = document.createElement("span");
       s.textContent = m;
@@ -189,6 +203,12 @@
         window.Engine.kpiDeltaText(prev.kpiBefore, round.kpiBefore) + "."
       : "Ausgangslage: Start der Simulation, alle Indizes auf Ausgangswert.";
 
+    $("chatPanel").classList.toggle("verborgen", isControl);
+    if (isControl) {
+      $("entscheidungHinweis").textContent =
+        "Bearbeiten Sie die Aufgabe eigenständig — wie einen Posteingang ohne Assistenz — " +
+        "und formulieren Sie hier Ihr Endergebnis bzw. Ihre finale Entscheidung für diese Runde.";
+    }
     $("modulTitel").textContent = `${mod.id} — ${mod.titel}`;
     $("modulSzenario").textContent = mod.szenario;
 
@@ -327,7 +347,9 @@
   function renderSurvey() {
     const form = $("surveyForm");
     form.textContent = "";
-    form.appendChild(frage(window.Surveys.trustItem, likertRow("sv_vertrauen", 7)));
+    if (!isControl) {
+      form.appendChild(frage(window.Surveys.trustItem, likertRow("sv_vertrauen", 7)));
+    }
 
     const h = document.createElement("h3");
     h.textContent = "Beanspruchung (NASA-TLX-Kurzform, 0–100)";
@@ -358,7 +380,7 @@
       tlx[dim.id] = parseInt($("tlx_" + dim.id).value, 10);
     }
     window.Engine.finalizeRound(session, round, pendingDecision.decision, pendingDecision.successProb, {
-      vertrauen: out.sv_vertrauen,
+      vertrauen: isControl ? null : out.sv_vertrauen,
       tlx,
     });
     pendingDecision = null;
@@ -367,13 +389,25 @@
   });
 
   // ---- Abschluss ----
+  function activeOpenQuestions() {
+    return isControl ? window.Surveys.finalOpenQuestionsControl : window.Surveys.finalOpenQuestions;
+  }
+
   function renderFinal() {
     const form = $("finalForm");
     form.textContent = "";
-    window.Surveys.finalTrustItems.forEach((item, i) => {
-      form.appendChild(frage(item, likertRow(`fi_trust_${i}`, 7)));
-    });
-    for (const q of window.Surveys.finalOpenQuestions) {
+    if (isControl) {
+      const p = document.createElement("p");
+      p.textContent =
+        "Sie haben ohne KI-Unterstützung gearbeitet; die Vertrauensskala entfällt daher. " +
+        "Bitte beantworten Sie die folgenden Fragen zur Bearbeitung.";
+      form.appendChild(p);
+    } else {
+      window.Surveys.finalTrustItems.forEach((item, i) => {
+        form.appendChild(frage(item, likertRow(`fi_trust_${i}`, 7)));
+      });
+    }
+    for (const q of activeOpenQuestions()) {
       const ta = document.createElement("textarea");
       ta.id = "fi_open_" + q.id;
       form.appendChild(frage(q.label, ta));
@@ -388,7 +422,7 @@
       return;
     }
     const open = {};
-    for (const q of window.Surveys.finalOpenQuestions) {
+    for (const q of activeOpenQuestions()) {
       open[q.id] = $("fi_open_" + q.id).value.trim();
     }
     session.final = { trust: out, open, timestamp: new Date().toISOString() };

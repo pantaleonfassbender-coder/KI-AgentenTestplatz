@@ -86,10 +86,17 @@
         Nachricht an den Agenten gesendet wird, überträgt eine Serverfunktion
         (<code>/api/agent</code>, betrieben auf Netlify) den Aufgabenkontext und die
         Chat-Nachrichten der laufenden Runde an <strong>genau einen</strong> der folgenden
-        Anbieter — je nach Sitzungseinstellung: Anthropic PBC (Claude), OpenAI (GPT) oder
-        Google (Gemini), jeweils mit Sitz in den USA.
+        Empfänger — je nach Sitzungseinstellung: Anthropic PBC (Claude), OpenAI (GPT) oder
+        Google (Gemini), jeweils mit Sitz in den USA, oder einen von der Studienleitung
+        konfigurierten Endpunkt für ein Open-Source-Modell (der konkrete Betreiber wird in
+        diesem Fall in den Studienunterlagen der jeweiligen Erhebung benannt).
         <strong>Nicht übermittelt</strong> werden: Teilnahmecode, Fragebogenantworten,
         Bewertungen und alle übrigen Studiendaten.
+      </p>
+      <p>
+        In der <strong>Kontrollbedingung ohne KI</strong> (Postkorb-Bearbeitung) findet
+        keinerlei Übermittlung an Modellanbieter statt; sämtliche Eingaben verbleiben
+        lokal im Browser.
       </p>
       <p>
         Chat-Eingaben sind für die Modellanbieter einsehbar und können dort nach deren

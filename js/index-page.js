@@ -1,20 +1,48 @@
-/* Startseite: Modulübersicht + Sitzungsanlage. */
+/* Startseite: vollständige Moduldarstellung + Sitzungsanlage. */
 (function () {
-  // Modulkarten rendern
-  const karten = document.getElementById("modulKarten");
+  // Aufgabenmodule im Volltext rendern
+  const liste = document.getElementById("modulListe");
   for (const id of Object.keys(window.TASK_MODULES)) {
     const m = window.TASK_MODULES[id];
-    const el = document.createElement("div");
-    el.className = "karte";
+    const panel = document.createElement("div");
+    panel.className = "panel";
+
     const tag = document.createElement("div");
     tag.className = "tag";
-    tag.textContent = `${m.id} · ${m.funktion} · ${m.aufgabentyp}`;
+    tag.textContent =
+      `${m.id} · Managementfunktion: ${m.funktion} · ${m.aufgabentyp} · ` +
+      `${m.struktur} · Richtwert ${m.dauerMin} Min.`;
+
     const h = document.createElement("h3");
-    h.textContent = m.titel;
-    const p = document.createElement("p");
-    p.textContent = m.szenario.length > 160 ? m.szenario.slice(0, 157) + "…" : m.szenario;
-    el.append(tag, h, p);
-    karten.appendChild(el);
+    h.textContent = `${m.id} — ${m.titel}`;
+
+    const sz = document.createElement("p");
+    sz.textContent = m.szenario;
+
+    const tbl = document.createElement("table");
+    for (const [k, v] of m.eingabedaten) {
+      const tr = document.createElement("tr");
+      const th = document.createElement("th");
+      th.textContent = k;
+      const td = document.createElement("td");
+      td.textContent = v;
+      tr.append(th, td);
+      tbl.appendChild(tr);
+    }
+
+    const auftrag = document.createElement("div");
+    auftrag.className = "hinweis";
+    const b = document.createElement("strong");
+    b.textContent = "Bearbeitungsauftrag: ";
+    auftrag.append(b, document.createTextNode(m.auftrag));
+
+    const raster = document.createElement("p");
+    const rb = document.createElement("strong");
+    rb.textContent = "Bewertungsraster (je 1–5): ";
+    raster.append(rb, document.createTextNode(m.raster.join(" · ")));
+
+    panel.append(tag, h, sz, tbl, auftrag, raster);
+    liste.appendChild(panel);
   }
 
   const speicherStatus = document.getElementById("speicherStatus");

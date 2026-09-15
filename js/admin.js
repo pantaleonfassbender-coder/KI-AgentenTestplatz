@@ -2,7 +2,10 @@
 
 (function () {
   const $ = (id) => document.getElementById(id);
-  const PROVIDER_NAMES = { anthropic: "Claude", openai: "GPT", gemini: "Gemini" };
+  const PROVIDER_NAMES = {
+    anthropic: "Claude", openai: "GPT", gemini: "Gemini",
+    opensource: "Open-Source", none: "ohne KI (Postkorb)",
+  };
 
   function download(filename, text, mime) {
     const blob = new Blob([text], { type: mime });
