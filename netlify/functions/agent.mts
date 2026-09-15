@@ -61,7 +61,8 @@ async function callAnthropic(system: string, messages: Msg[], maxTokens: number)
 
 async function callOpenAICompatible(
   label: string, base: string, key: string | undefined, model: string,
-  system: string, messages: Msg[], maxTokens: number
+  system: string, messages: Msg[], maxTokens: number,
+  tokenParam: "max_completion_tokens" | "max_tokens"
 ) {
   const headers: Record<string, string> = { "content-type": "application/json" };
   if (key) headers.authorization = `Bearer ${key}`;
@@ -70,7 +71,7 @@ async function callOpenAICompatible(
     headers,
     body: JSON.stringify({
       model,
-      max_completion_tokens: maxTokens,
+      [tokenParam]: maxTokens,
       messages: [{ role: "system", content: system }, ...messages],
     }),
   });
@@ -84,7 +85,7 @@ async function callOpenAI(system: string, messages: Msg[], maxTokens: number) {
   const key = process.env.OPENAI_API_KEY;
   if (!key) throw new Error("OPENAI_API_KEY fehlt (Netlify-Env oder AI Gateway).");
   const base = process.env.OPENAI_BASE_URL || "https://api.openai.com";
-  return callOpenAICompatible("OpenAI", base, key, MODELS.openai, system, messages, maxTokens);
+  return callOpenAICompatible("OpenAI", base, key, MODELS.openai, system, messages, maxTokens, "max_completion_tokens");
 }
 
 /* Open-Source-Modell ueber einen beliebigen OpenAI-kompatiblen Endpunkt. */
@@ -97,7 +98,8 @@ async function callOpenSource(system: string, messages: Msg[], maxTokens: number
       "Netlify-Umgebung setzen (OpenAI-kompatibler Endpunkt, optional OSS_API_KEY)."
     );
   }
-  return callOpenAICompatible("Open-Source-Endpunkt", base, process.env.OSS_API_KEY, model, system, messages, maxTokens);
+  // Klassisches max_tokens: wird von Ollama, vLLM, Groq, Together usw. verstanden.
+  return callOpenAICompatible("Open-Source-Endpunkt", base, process.env.OSS_API_KEY, model, system, messages, maxTokens, "max_tokens");
 }
 
 async function callGemini(system: string, messages: Msg[], maxTokens: number) {
