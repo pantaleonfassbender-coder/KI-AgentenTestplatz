@@ -25,7 +25,7 @@ Bewertungsraster. Konzeption: [KONZEPT.md](KONZEPT.md).
 | `js/xlsx-export.js` | Abhängigkeitsfreier XLSX-Generator für den Datenexport (Blätter „Runden" und „Teilnehmende") |
 | `js/engine.js` | Rundenmaschine, Kennzahlen-Fortschreibung, Reliance-Index |
 | `js/api-client.js` | Client der Agenten-Abstraktionsschicht |
-| `js/surveys.js` | Erhebungsinstrumente (BIP-angelehnte eigene Kurzskalen, NASA-TLX, Abschlussskala) |
+| `js/surveys.js` | Erhebungsinstrumente als modulare Konfiguration (BIP-angelehnte eigene Kurzskalen, NASA-TLX, Abschlussskala); anpassbar über den Fragebogen-Editor der Forschungsansicht, Versionskennung je Sitzung |
 | `netlify/functions/agent.mts` | Serverfunktion `/api/agent`: einheitliche Schnittstelle zu Anthropic, OpenAI, Google und einem Open-Source-Endpunkt |
 
 Kein Build-Schritt, keine Abhängigkeiten, keine Fremdressourcen. Alle Studiendaten

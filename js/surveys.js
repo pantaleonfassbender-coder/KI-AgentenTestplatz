@@ -1,10 +1,15 @@
-/* Data Collection (MVRP-Layer 6): Erhebungsinstrumente.
+/* Data Collection (MVRP-Layer 6): Erhebungsinstrumente — MODULAR.
+   window.DEFAULT_SURVEYS ist der eingebaute Standard; über den Fragebogen-Editor
+   der Forschungsansicht kann eine angepasste Fassung im Browser-Speicher abgelegt
+   werden (Items ergänzen, ändern, Skalen hinzufügen). window.Surveys ist immer die
+   aktive Fassung; jede Sitzung protokolliert deren Versionskennung.
    Baseline-Kurzskalen: EIGENE Formulierungen in Anlehnung an die vier BIP-Bereiche
    (Hossiep & Paschen, 2019) — kein Originalmaterial des lizenzierten Verfahrens.
    NASA-TLX-Kurzform nach Hart & Staveland (1988); Abschlussskala in Anlehnung an
    Lee & See (2004). */
 
-window.Surveys = {
+window.DEFAULT_SURVEYS = {
+  version: "standard",
   baselineScales: [
     {
       id: "leistungsmotivation",
@@ -92,3 +97,90 @@ window.Surveys = {
     { id: "aufgaben", label: "Welche Unterschiede haben Sie zwischen den Aufgabentypen wahrgenommen (z. B. Analyse- vs. Führungsaufgaben)?" },
   ],
 };
+
+/* Verwaltung der aktiven Instrumentenfassung (Standard oder Anpassung). */
+window.SurveysConfig = (function () {
+  const KEY = "katp_surveys_v1";
+  const SLUG = /^[a-z0-9_-]+$/;
+
+  function validate(o) {
+    const errs = [];
+    const isStrArr = (a) => Array.isArray(a) && a.length > 0 && a.every((x) => typeof x === "string" && x.trim());
+    if (!o || typeof o !== "object") return ["Kein Objekt."];
+    if (typeof o.version !== "string" || !o.version.trim()) errs.push("version: Kennung angeben (z. B. \"v2 Resilienz\").");
+    if (!Array.isArray(o.baselineScales) || o.baselineScales.length === 0) {
+      errs.push("baselineScales: mindestens eine Skala.");
+    } else {
+      const ids = new Set();
+      for (const sc of o.baselineScales) {
+        if (!sc || !SLUG.test(sc.id || "")) errs.push(`baselineScales: id fehlt/ungültig (nur a-z, 0-9, _ , -): ${JSON.stringify(sc && sc.id)}`);
+        else if (ids.has(sc.id)) errs.push(`baselineScales: id doppelt: ${sc.id}`);
+        else if (sc.id === "ai") errs.push('baselineScales: id "ai" ist reserviert.');
+        else ids.add(sc.id);
+        if (!sc || typeof sc.name !== "string" || !sc.name.trim()) errs.push(`baselineScales[${sc && sc.id}]: name fehlt.`);
+        if (!sc || !isStrArr(sc.items)) errs.push(`baselineScales[${sc && sc.id}]: items = nichtleere Liste von Texten.`);
+      }
+    }
+    const ae = o.aiExperience;
+    if (!ae || !ae.frequency || !isStrArr(ae.frequency.options) || typeof ae.frequency.label !== "string" ||
+        !ae.competence || typeof ae.competence.label !== "string" ||
+        !ae.agents || !isStrArr(ae.agents.options) || typeof ae.agents.label !== "string") {
+      errs.push("aiExperience: frequency{label,options}, competence{label}, agents{label,options} erforderlich.");
+    }
+    if (typeof o.trustItem !== "string" || !o.trustItem.trim()) errs.push("trustItem: Text erforderlich.");
+    if (!Array.isArray(o.tlxDimensions) || o.tlxDimensions.length === 0 ||
+        !o.tlxDimensions.every((d) => d && SLUG.test(d.id || "") && typeof d.label === "string" && typeof d.frage === "string")) {
+      errs.push("tlxDimensions: Liste von {id (slug), label, frage}.");
+    }
+    if (!isStrArr(o.finalTrustItems)) errs.push("finalTrustItems: nichtleere Liste von Texten.");
+    for (const k of ["finalOpenQuestions", "finalOpenQuestionsControl"]) {
+      if (!Array.isArray(o[k]) || o[k].length === 0 ||
+          !o[k].every((q) => q && SLUG.test(q.id || "") && typeof q.label === "string" && q.label.trim())) {
+        errs.push(`${k}: Liste von {id (slug), label}.`);
+      }
+    }
+    return errs;
+  }
+
+  function loadOverride() {
+    try {
+      const raw = localStorage.getItem(KEY);
+      if (!raw) return null;
+      const o = JSON.parse(raw);
+      return validate(o).length === 0 ? o : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function saveFromText(text) {
+    let o;
+    try {
+      o = JSON.parse(text);
+    } catch (e) {
+      return ["JSON ungültig: " + e.message];
+    }
+    const errs = validate(o);
+    if (errs.length) return errs;
+    try {
+      localStorage.setItem(KEY, JSON.stringify(o));
+    } catch {
+      return ["Speichern fehlgeschlagen (Browser-Speicher nicht verfügbar)."];
+    }
+    window.Surveys = o;
+    return [];
+  }
+
+  function reset() {
+    try { localStorage.removeItem(KEY); } catch { /* egal */ }
+    window.Surveys = window.DEFAULT_SURVEYS;
+  }
+
+  function isCustom() {
+    return window.Surveys !== window.DEFAULT_SURVEYS;
+  }
+
+  return { validate, saveFromText, reset, isCustom, loadOverride };
+})();
+
+window.Surveys = window.SurveysConfig.loadOverride() || window.DEFAULT_SURVEYS;

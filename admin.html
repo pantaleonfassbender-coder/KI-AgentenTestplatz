@@ -78,6 +78,29 @@
       <p class="status" id="listStatus"></p>
     </section>
 
+    <section class="panel">
+      <h2>Fragebogen-Editor (modulare Instrumente)</h2>
+      <p>Die Erhebungsinstrumente sind als Konfiguration hinterlegt und können hier
+        angepasst werden: Items ergänzen oder umformulieren, Baseline-Skalen hinzufügen
+        (z.&nbsp;B. Resilienz), offene Fragen ändern. Die Anpassung gilt für
+        <strong>neu angelegte Sitzungen</strong> auf diesem Gerät; jede Sitzung
+        protokolliert die Versionskennung ihrer Instrumentenfassung
+        (Spalte <code>fragebogen_version</code> im Export).</p>
+      <div class="hinweis warnung">
+        Während einer laufenden Erhebungswelle sollten Skalen-IDs und bestehende
+        Item-Formulierungen nicht verändert werden — sonst sind Sitzungen nicht mehr
+        vergleichbar. Neue Items/Skalen ergänzen und die <code>version</code>-Kennung
+        hochzählen; Auswertung dann getrennt nach <code>fragebogen_version</code>.
+      </div>
+      <p class="status" id="surveysStatusZeile"></p>
+      <label for="surveysEditor">Aktive Konfiguration (JSON)</label>
+      <textarea id="surveysEditor" spellcheck="false"></textarea>
+      <button id="btnSurveysSave">Prüfen &amp; speichern</button>
+      <button id="btnSurveysReset" class="sekundaer">Standard wiederherstellen</button>
+      <button id="btnSurveysExport" class="sekundaer">Konfiguration als Datei sichern</button>
+      <p class="status" id="surveysStatus"></p>
+    </section>
+
     <section id="detail" class="verborgen">
       <h2 id="detailTitel"></h2>
       <div id="detailInhalt"></div>

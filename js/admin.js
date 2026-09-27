@@ -59,8 +59,8 @@
   function participantsMatrix(sessions) {
     const scaleIds = window.Surveys.baselineScales.map((sc) => sc.id);
     const rows = [[
-      "session_id", "code", "provider", "autonomy_plan", "status", "angelegt",
-      "runden_abgeschlossen",
+      "session_id", "code", "provider", "autonomy_plan", "fragebogen_version",
+      "status", "angelegt", "runden_abgeschlossen",
       ...scaleIds.map((id) => "bl_" + id),
       "ki_frequenz", "ki_kompetenz", "ki_agentenerfahrung",
       "abschluss_vertrauen_mittel",
@@ -78,7 +78,8 @@
         if (vals.length) finalTrust = Math.round((vals.reduce((a, b) => a + b, 0) / vals.length) * 100) / 100;
       }
       rows.push([
-        s.id, s.code, s.provider, s.autonomyPlan, s.status, s.createdAt,
+        s.id, s.code, s.provider, s.autonomyPlan, s.surveysVersion || "standard",
+        s.status, s.createdAt,
         s.rounds.filter((r) => r.endedAt).length,
         ...scaleMeans,
         s.baseline ? s.baseline.aiFrequency : "",
@@ -341,6 +342,49 @@
     ]);
     download(`katp_export_${stamp()}.xlsx`, blob);
   });
+
+  // ---- Fragebogen-Editor ----
+  function surveysSummary() {
+    const s = window.Surveys;
+    const nItems = s.baselineScales.reduce((a, sc) => a + sc.items.length, 0);
+    return `Aktiv: „${s.version}" (${window.SurveysConfig.isCustom() ? "angepasst, auf diesem Gerät gespeichert" : "eingebauter Standard"}) — ` +
+      `${s.baselineScales.length} Baseline-Skalen mit ${nItems} Items, ` +
+      `${s.tlxDimensions.length} TLX-Dimensionen, ${s.finalTrustItems.length} Abschluss-Vertrauensitems, ` +
+      `${s.finalOpenQuestions.length}+${s.finalOpenQuestionsControl.length} offene Fragen.`;
+  }
+
+  function renderSurveysEditor() {
+    $("surveysStatusZeile").textContent = surveysSummary();
+    $("surveysEditor").value = JSON.stringify(window.Surveys, null, 2);
+  }
+
+  $("btnSurveysSave").addEventListener("click", () => {
+    const errs = window.SurveysConfig.saveFromText($("surveysEditor").value);
+    const st = $("surveysStatus");
+    if (errs.length) {
+      st.textContent = "Nicht gespeichert — " + errs.join(" · ");
+      st.className = "status fehler";
+    } else {
+      st.textContent = "Gespeichert. Gilt für neu angelegte Sitzungen auf diesem Gerät.";
+      st.className = "status erfolg";
+      renderSurveysEditor();
+    }
+  });
+
+  $("btnSurveysReset").addEventListener("click", () => {
+    if (!confirm("Anpassung verwerfen und den eingebauten Standard aktivieren?")) return;
+    window.SurveysConfig.reset();
+    renderSurveysEditor();
+    $("surveysStatus").textContent = "Standard wiederhergestellt.";
+    $("surveysStatus").className = "status erfolg";
+  });
+
+  $("btnSurveysExport").addEventListener("click", () => {
+    download(`katp_fragebogen_${(window.Surveys.version || "standard").replace(/[^\w-]+/g, "_")}_${stamp()}.json`,
+      JSON.stringify(window.Surveys, null, 2), "application/json");
+  });
+
+  renderSurveysEditor();
 
   // Bewertungsleitfaden rendern (Grundkriterien zuerst, dann Modulkriterien)
   function renderLeitfaden() {

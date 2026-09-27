@@ -263,6 +263,13 @@ footer.site a { color: var(--accent); }
 }
 .kriterium select { max-width: 8rem; }
 
+#surveysEditor {
+  min-height: 18rem;
+  font-family: Consolas, "Courier New", monospace;
+  font-size: 0.85rem;
+  white-space: pre;
+}
+
 .fortschritt {
   font-family: system-ui, sans-serif;
   font-size: 0.85rem;

@@ -40,6 +40,7 @@ window.Engine = (function () {
       autonomyByRound: buildAutonomyByRound(opts.autonomyPlan, n),
       sequence: buildSequence(n),
       createdAt: new Date().toISOString(),
+      surveysVersion: (window.Surveys && window.Surveys.version) || "standard",
       status: "neu",
       consent: null,
       baseline: null,

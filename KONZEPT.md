@@ -59,7 +59,11 @@ Teil B.4 des Arbeitspapiers).
 - **Modul 4 — Erhebung:** Einverständnis, Baseline (BIP-angelehnte Kurzskalen — eigene
   Items, kein Hogrefe-Originalmaterial —, KI-Vorerfahrung), Kurzerhebung je Runde
   (Vertrauen 1–7, NASA-TLX-Kurzform 0–100), Abschlussfragebogen (Vertrauen/Reliance nach
-  Lee & See angelehnt, offene Retrospektive-Fragen).
+  Lee & See angelehnt, offene Retrospektive-Fragen). Alle Instrumente sind **modular
+  als Konfiguration** hinterlegt (`js/surveys.js`) und über den Fragebogen-Editor der
+  Forschungsansicht anpassbar (Items ergänzen/ändern, Skalen hinzufügen — z. B. das
+  Resilienz-Modul aus den Ausbaustufen); jede Sitzung protokolliert die
+  Versionskennung ihrer Instrumentenfassung (`fragebogen_version` im Export).
 - **Modul 5 — Forschungsansicht:** Sitzungsübersicht, Bewertungsraster-Eingabe
   (Expertenrating), Datenexport JSON/CSV, Löschfunktion.
 - **Modul 6 — Dokumentation:** README, dieses Konzept, Rechtstexte gegen den Code geprüft.
