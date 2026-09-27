@@ -288,12 +288,56 @@
     download(`katp_alle-sitzungen_${stamp()}.json`, JSON.stringify(all, null, 2), "application/json");
   });
 
+  /* Blatt "Texte": eine Zeile je Texteinheit fuer psycholinguistische Auswertung
+     (z. B. LIWC-22: Spalte "text" als Analysespalte, uebrige Spalten als Metadaten).
+     Enthaelt Personen- UND Agententexte, damit auch Sprachangleichung
+     (Language Style Matching) auswertbar ist. */
+  function textsMatrix(sessions) {
+    const wc = (t) => t.trim() ? t.trim().split(/\s+/).length : 0;
+    const rows = [[
+      "session_id", "code", "provider", "autonomy_plan", "round", "module_id",
+      "funktion", "aufgabentyp", "autonomy", "quelle", "agent_rolle", "auto",
+      "sequenz", "zeitstempel", "modell", "n_woerter", "n_zeichen", "text",
+    ]];
+    for (const s of sessions) {
+      for (const r of s.rounds) {
+        const mod = window.TASK_MODULES[r.moduleId] || {};
+        const base = [s.id, s.code, s.provider, s.autonomyPlan, r.n, r.moduleId,
+          mod.funktion || "", mod.aufgabentyp || "", r.autonomy];
+        r.interactions.forEach((x, i) => {
+          const text = x.content || "";
+          rows.push([...base,
+            x.role === "user" ? "chat_person" : "chat_agent",
+            x.role === "agent" ? (x.agentRole || "") : "",
+            x.role === "user" && x.auto ? 1 : 0,
+            i + 1, x.timestamp || "", x.model || "",
+            wc(text), text.length, text]);
+        });
+        if (r.decision) {
+          rows.push([...base, "finale_entscheidung", "", 0,
+            r.interactions.length + 1, r.endedAt || "", "",
+            wc(r.decision), r.decision.length, r.decision]);
+        }
+      }
+      if (s.final && s.final.open) {
+        for (const [k, v] of Object.entries(s.final.open)) {
+          if (!v) continue;
+          rows.push([s.id, s.code, s.provider, s.autonomyPlan, "", "", "", "", "",
+            "abschluss_" + k, "", 0, "", s.final.timestamp || "", "",
+            wc(v), v.length, v]);
+        }
+      }
+    }
+    return rows;
+  }
+
   $("btnExportAllXlsx").addEventListener("click", () => {
     const all = window.Store.loadAll();
     if (all.length === 0) { $("listStatus").textContent = "Keine Sitzungen vorhanden."; return; }
     const blob = window.XlsxExport.build([
       { name: "Runden", rows: roundsMatrix(all) },
       { name: "Teilnehmende", rows: participantsMatrix(all) },
+      { name: "Texte", rows: textsMatrix(all) },
     ]);
     download(`katp_export_${stamp()}.xlsx`, blob);
   });

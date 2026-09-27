@@ -30,8 +30,12 @@ Bewertungsraster. Konzeption: [KONZEPT.md](KONZEPT.md).
 
 Kein Build-Schritt, keine Abhängigkeiten, keine Fremdressourcen. Alle Studiendaten
 liegen ausschließlich lokal im Browser des Erhebungsgeräts (localStorage) und werden
-als JSON (vollständig) oder als Excel-Arbeitsmappe (.xlsx, eine Zeile je Runde bzw.
-je Person) exportiert.
+als JSON (vollständig) oder als Excel-Arbeitsmappe (.xlsx) exportiert — Blätter
+„Runden" (eine Zeile je Runde), „Teilnehmende" (eine Zeile je Person) und „Texte"
+(eine Zeile je Texteinheit: Chat-Beiträge von Person und Agent, finale
+Entscheidungen, offene Abschlussantworten; Spalte `text` für psycholinguistische
+Auswertungen, z. B. LIWC-22, inkl. Language Style Matching über die
+Personen-/Agenten-Zeilen).
 
 ## Untersuchungsbedingungen
 

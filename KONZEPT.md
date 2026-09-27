@@ -109,6 +109,12 @@ Teil B.4 des Arbeitspapiers).
   Abschlussskala in Anlehnung an Lee & See (2004).
 - **Versionierung** (Teil F.5): Modell-ID und Zeitstempel jeder API-Antwort werden
   mitprotokolliert, da sich Agentenverhalten zwischen Modellversionen ändert.
+- **Psycholinguistik:** Der Excel-Export enthält ein Blatt „Texte" (eine Zeile je
+  Texteinheit mit Metadaten und Textspalte) für Analysen mit LIWC-22 o. ä. —
+  Personen- und Agentenbeiträge getrennt ausgewiesen, sodass neben Merkmalen der
+  Teilnehmersprache auch Sprachangleichung (Language Style Matching) über die
+  Runden untersucht werden kann; automatisch erzeugte Arbeitsaufträge (Autonomie
+  hoch) sind markiert (`auto = 1`) und vor der Analyse auszuschließen.
 
 ## 7. Datenschutz und Ethik (implementiertes Verhalten)
 
