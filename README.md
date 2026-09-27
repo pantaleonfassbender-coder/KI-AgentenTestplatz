@@ -19,9 +19,10 @@ Bewertungsraster. Konzeption: [KONZEPT.md](KONZEPT.md).
 |---|---|
 | `index.html` | Startseite mit den sechs Aufgabenmodulen im Volltext, Sitzungsanlage (Bedingung, Autonomiegrad, Rundenzahl) |
 | `study.html` + `js/study.js` | Sitzungs-Runner: Einverständnis → Baseline → Runden → Abschluss |
-| `admin.html` + `js/admin.js` | Forschungsansicht: Forschungsfragen, Expertenrating, Export (JSON/CSV), Löschen |
+| `admin.html` + `js/admin.js` | Forschungsansicht: Forschungsfragen, Bewertungsleitfaden, kriterienbasiertes Expertenrating, Export (JSON/Excel), Löschen |
 | `legal.html` | Impressum und Datenschutzerklärung |
-| `js/tasks-data.js` | Task Engine: Aufgabenmodule E.1–E.6, Agentenrollen, Autonomie-Instruktionen |
+| `js/tasks-data.js` | Task Engine: Aufgabenmodule E.1–E.6, Agentenrollen, Autonomie-Instruktionen, Bewertungsleitfaden (`RATING_CRITERIA`) |
+| `js/xlsx-export.js` | Abhängigkeitsfreier XLSX-Generator für den Datenexport (Blätter „Runden" und „Teilnehmende") |
 | `js/engine.js` | Rundenmaschine, Kennzahlen-Fortschreibung, Reliance-Index |
 | `js/api-client.js` | Client der Agenten-Abstraktionsschicht |
 | `js/surveys.js` | Erhebungsinstrumente (BIP-angelehnte eigene Kurzskalen, NASA-TLX, Abschlussskala) |
@@ -29,7 +30,8 @@ Bewertungsraster. Konzeption: [KONZEPT.md](KONZEPT.md).
 
 Kein Build-Schritt, keine Abhängigkeiten, keine Fremdressourcen. Alle Studiendaten
 liegen ausschließlich lokal im Browser des Erhebungsgeräts (localStorage) und werden
-als JSON/CSV exportiert.
+als JSON (vollständig) oder als Excel-Arbeitsmappe (.xlsx, eine Zeile je Runde bzw.
+je Person) exportiert.
 
 ## Untersuchungsbedingungen
 

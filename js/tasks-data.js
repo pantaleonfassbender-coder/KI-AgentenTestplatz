@@ -143,6 +143,111 @@ window.TASK_MODULES = {
   }
 };
 
+/* Bewertungsleitfaden: verhaltensverankerte Kriterien fuer das Expertenrating
+   (1 = unzureichend, 3 = solide, 5 = exzellent; 2 und 4 als Zwischenstufen).
+   Grundlage der kriterienbasierten Bewertung in der Forschungsansicht. */
+window.RATING_CRITERIA = {
+  "Vollständigkeit": {
+    modul: null,
+    def: "Deckt das Ergebnis alle Teile des Bearbeitungsauftrags und alle relevanten Eingabedaten ab?",
+    anker: {
+      1: "Wesentliche Auftragsbestandteile fehlen; zentrale Eingabedaten bleiben unberücksichtigt.",
+      3: "Auftrag im Kern erfüllt; einzelne Nebenaspekte oder Datenpunkte fehlen.",
+      5: "Alle Auftragsbestandteile und relevanten Daten sind erkennbar verarbeitet.",
+    },
+  },
+  "Konsistenz": {
+    modul: null,
+    def: "Sind Aussagen, Zahlen und Schlussfolgerungen in sich und mit den Eingabedaten widerspruchsfrei?",
+    anker: {
+      1: "Aussagen widersprechen einander oder den Eingabedaten.",
+      3: "Weitgehend widerspruchsfrei; kleinere Unstimmigkeiten ohne Folgen für das Ergebnis.",
+      5: "Durchgängig stimmig; Zahlen, Argumente und Empfehlung greifen ineinander.",
+    },
+  },
+  "Nachvollziehbarkeit": {
+    modul: null,
+    def: "Ist der Weg von den Daten zur Entscheidung explizit begründet?",
+    anker: {
+      1: "Behauptungen ohne Begründung; die Entscheidung fällt unvermittelt.",
+      3: "Begründung vorhanden, aber lückenhaft oder nur implizit.",
+      5: "Jeder wesentliche Schritt ist explizit und prüfbar begründet.",
+    },
+  },
+  "Angemessenheit": {
+    modul: null,
+    def: "Passt das Ergebnis zu Lage und Möglichkeiten der fiktiven NordTec GmbH (Größe, Kapazität, Kennzahlenlage)?",
+    anker: {
+      1: "Der Unternehmenskontext wird ignoriert (z. B. Kapazitätsgrenzen, Kennzahlenlage).",
+      3: "Kontext grob berücksichtigt; einzelne unrealistische Annahmen.",
+      5: "Ergebnis ist auf Kontext und Kennzahlenlage sichtbar zugeschnitten.",
+    },
+  },
+  "Effizienz": {
+    modul: null,
+    def: "Steht das Ergebnis in gutem Verhältnis zu Bearbeitungszeit und -aufwand (Richtwert des Moduls)?",
+    anker: {
+      1: "Aufwand weit über dem Richtwert ohne erkennbaren Mehrwert, oder Abbruchqualität.",
+      3: "Aufwand im Rahmen; Ergebnis mit vertretbarem Zusatzaufwand erreicht.",
+      5: "Prägnantes Ergebnis innerhalb des Richtwerts, ohne unnötige Schleifen.",
+    },
+  },
+  "Datenbasiertheit der Empfehlung": {
+    modul: "E1",
+    def: "Werden die vorliegenden Zahlen (Absatzreihe, Preise, Kapazität, Anlaufkosten) korrekt einbezogen?",
+    anker: {
+      1: "Empfehlung ohne Bezug zu den Zahlen oder mit Rechen-/Lesefehlern.",
+      3: "Zahlen teilweise genutzt; Trend erkannt, aber nicht quantifiziert.",
+      5: "Empfehlung quantitativ aus den Daten hergeleitet (Trend, Kapazität, Kostenrelation).",
+    },
+  },
+  "Differenziertheit des Vergleichs": {
+    modul: "E2",
+    def: "Werden Unterschiede zwischen den Wettbewerbern erkannt und strategisch verwertet, statt pauschal zu bewerten?",
+    anker: {
+      1: "Pauschalurteile; die Wettbewerber werden über einen Kamm geschoren.",
+      3: "Unterschiede benannt, aber ohne Konsequenz für die Reaktionsoption.",
+      5: "Positionsspezifische Stärken/Schwächen mit je eigener strategischer Konsequenz.",
+    },
+  },
+  "Trennschärfe der Kritik": {
+    modul: "E3",
+    def: "Werden konkrete, umsetzbare Verbesserungspunkte benannt?",
+    anker: {
+      1: "Kritik bleibt allgemein („könnte besser sein“).",
+      3: "Konkrete Punkte, aber teils nicht umsetzbar oder nebensächlich.",
+      5: "Mindestens drei konkrete, umsetzbare und priorisierte Verbesserungspunkte.",
+    },
+  },
+  "Fairness/Nachvollziehbarkeit": {
+    modul: "E4",
+    def: "Stützt sich die Bewertung erkennbar auf die dokumentierten fiktiven Fakten statt auf unbelegte Zuschreibungen?",
+    anker: {
+      1: "Zuschreibungen ohne Faktenbasis; Gesamteindruck überstrahlt Einzelbefunde (Halo-Effekt).",
+      3: "Überwiegend faktenbasiert; einzelne unbelegte Wertungen.",
+      5: "Jede Wertung ist auf dokumentierte Fakten der beiden Perioden rückführbar.",
+    },
+  },
+  "Konsistenz Formulierung/Faktenlage": {
+    modul: "E5",
+    def: "Entspricht der Formulierungsgrad der Zeugnissprache der dokumentierten Leistung (wohlwollend, aber wahr)?",
+    anker: {
+      1: "Zeugnissprache widerspricht dem dokumentierten Profil (deutlich zu gut oder zu schlecht).",
+      3: "Grundton passend; einzelne Formeln unpassend gewählt.",
+      5: "Formulierungsgrad exakt aus der Faktenlage begründet und im Text geprüft.",
+    },
+  },
+  "Abwägungsqualität": {
+    modul: "E6",
+    def: "Werden die Zielkonflikte zwischen Preis, Qualität, Lieferzeit und Risiko explizit benannt und gewichtet?",
+    anker: {
+      1: "Entscheidung ohne Benennung der Zielkonflikte.",
+      3: "Zielkonflikte benannt, aber ohne erkennbare Gewichtung.",
+      5: "Zielkonflikte explizit gewichtet; Engpassrisiko der gewählten Option realistisch eingeschätzt.",
+    },
+  },
+};
+
 /* Standard-Modulfolge (Teil E.7: je Runde nur eine Managementfunktion). */
 window.DEFAULT_SEQUENCE = ["E1", "E2", "E6", "E3", "E4", "E5"];
 

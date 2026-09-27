@@ -242,6 +242,27 @@ footer.site a { color: var(--accent); }
 
 .verborgen { display: none !important; }
 
+/* Bewertungsleitfaden / kriterienbasiertes Rating */
+.kriterium {
+  border-top: 1px solid var(--line);
+  padding-top: 0.6rem;
+  margin-top: 0.6rem;
+}
+.kriterium h3 { margin: 0 0 0.2rem; font-size: 1rem; }
+.krit-def {
+  font-family: system-ui, sans-serif;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0.1rem 0 0.3rem;
+}
+.krit-anker {
+  font-size: 0.85rem;
+  margin: 0.15rem 0;
+  padding-left: 0.8rem;
+  border-left: 3px solid var(--line);
+}
+.kriterium select { max-width: 8rem; }
+
 .fortschritt {
   font-family: system-ui, sans-serif;
   font-size: 0.85rem;

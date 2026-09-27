@@ -43,7 +43,7 @@ Teil B.4 des Arbeitspapiers).
 | **L4 Workflow & Orchestration** | Rundenmaschine in `js/engine.js` + `js/study.js`: Einverständnis → Baseline → n Runden (Briefing → Bearbeitung mit Agent → Entscheidung → Kurzerhebung) → Abschlusserhebung; Autonomiegrad within-subject randomisierbar |
 | **L5 AI Integration** | Eine Netlify Function (`/api/agent`) als Agenten-Abstraktionsschicht mit einheitlicher Schnittstelle zu **Anthropic (Claude)**, **OpenAI (GPT)**, **Google (Gemini)** und einem konfigurierbaren **Open-Source-Endpunkt** (OpenAI-kompatibel, z. B. Ollama/vLLM); drei funktional unterschiedliche Agentenrollen (Analyst, Kritiker, Koordinator) ohne direkte Agent-zu-Agent-Kommunikation — Stufe 2 der HACTLab-Reifegradlogik. Zusätzlich **Postkorb-Kontrollbedingung ohne KI** (eigenständige Bearbeitung derselben Module, Basisvergleich für F1) |
 | **L6 Data Collection** | Vollständiges Interaktionsprotokoll (Prompts, Antworten, Modellversion, Zeitstempel, Latenz), Reliance-Index (heuristisch: n-Gramm-Überlappung Entscheidung ↔ Agentenbeiträge), Kurzerhebung je Runde (Vertrauen, NASA-TLX-Kurzform), Bewertungsraster (Expertenrating 1–5), Baseline- und Abschlussfragebogen |
-| **L7 Data Storage & Management** | Ausschließlich lokal im Browser der Erhebungsstation (`localStorage`), pseudonyme Teilnahmecodes; Export als JSON (vollständig) und CSV (flach, eine Zeile je Runde) über die Forschungsansicht — kein Server-Speicher, keine Datenbank |
+| **L7 Data Storage & Management** | Ausschließlich lokal im Browser der Erhebungsstation (`localStorage`), pseudonyme Teilnahmecodes; Export als JSON (vollständig) und als Excel-Arbeitsmappe (Blätter „Runden" — eine Zeile je Runde — und „Teilnehmende", erzeugt ohne Fremdbibliothek in `js/xlsx-export.js`) über die Forschungsansicht — kein Server-Speicher, keine Datenbank |
 
 ## 4. Umsetzungsmodule (Bauplan der Plattform)
 
@@ -94,7 +94,10 @@ Teil B.4 des Arbeitspapiers).
   manuelle Codierung bleibt Referenzverfahren.
 - **Entscheidungsqualität:** Expertenrating 1–5 je Rubrik-Kriterium (Vollständigkeit,
   Konsistenz, Nachvollziehbarkeit, Angemessenheit, Effizienz + Modulkriterium) in der
-  Forschungsansicht, nachträglich erfassbar.
+  Forschungsansicht, nachträglich erfassbar; kriterienbasiert über den
+  verhaltensverankerten Bewertungsleitfaden (Definition + Anker für die Stufen 1/3/5
+  je Kriterium, `RATING_CRITERIA` in `js/tasks-data.js`), der bei der Eingabe direkt
+  am jeweiligen Kriterium angezeigt wird.
 - **Ökonomischer Erfolg:** vereinfachtes Planspielmodell — Budget-, Umsatz- und
   Risikoindex werden je Runde aus Ratingmittel (falls vorhanden) bzw. neutral
   fortgeschrieben; ausdrücklich als Kontextsignal, nicht als validiertes Erfolgsmaß.

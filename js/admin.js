@@ -7,8 +7,8 @@
     opensource: "Open-Source", none: "ohne KI (Postkorb)",
   };
 
-  function download(filename, text, mime) {
-    const blob = new Blob([text], { type: mime });
+  function download(filename, content, mime) {
+    const blob = content instanceof Blob ? content : new Blob([content], { type: mime });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     a.download = filename;
@@ -18,22 +18,15 @@
     setTimeout(() => URL.revokeObjectURL(a.href), 5000);
   }
 
-  function csvCell(v) {
-    if (v === null || v === undefined) return "";
-    const s = String(v);
-    return /[";\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
-  }
-
-  function roundsToCsv(sessions) {
-    const head = [
+  function roundsMatrix(sessions) {
+    const rows = [[
       "session_id", "code", "provider", "autonomy_plan", "round", "module_id", "modul_titel",
       "funktion", "aufgabentyp", "autonomy", "started_at", "ended_at", "dauer_s",
       "n_user_msgs", "n_agent_msgs", "modelle", "reliance_index", "erfolg_prob",
       "vertrauen", "tlx_geistig", "tlx_zeitdruck", "tlx_leistung", "tlx_anstrengung", "tlx_frustration",
       "kpi_budget_vor", "kpi_umsatz_vor", "kpi_risiko_vor",
       "rating_mittel", "rating_einzeln", "entscheidung",
-    ];
-    const rows = [head.join(";")];
+    ]];
     for (const s of sessions) {
       for (const r of s.rounds) {
         const mod = window.TASK_MODULES[r.moduleId] || {};
@@ -42,9 +35,9 @@
         const models = [...new Set(r.interactions.filter((x) => x.role === "agent").map((x) => x.model))].join("|");
         const tlx = (r.survey && r.survey.tlx) || {};
         let ratingMittel = "", ratingEinzeln = "";
-        if (r.rating && r.rating.criteria) {
+        if (r.rating && r.rating.criteria && Object.keys(r.rating.criteria).length) {
           const vals = Object.values(r.rating.criteria);
-          ratingMittel = (vals.reduce((a, b) => a + b, 0) / vals.length).toFixed(2);
+          ratingMittel = Math.round((vals.reduce((a, b) => a + b, 0) / vals.length) * 100) / 100;
           ratingEinzeln = Object.entries(r.rating.criteria).map(([k, v]) => `${k}=${v}`).join("|");
         }
         rows.push([
@@ -57,10 +50,45 @@
           tlx.geistig, tlx.zeitdruck, tlx.leistung, tlx.anstrengung, tlx.frustration,
           r.kpiBefore.budget, r.kpiBefore.umsatz, r.kpiBefore.risiko,
           ratingMittel, ratingEinzeln, r.decision,
-        ].map(csvCell).join(";"));
+        ]);
       }
     }
-    return rows.join("\r\n");
+    return rows;
+  }
+
+  function participantsMatrix(sessions) {
+    const scaleIds = window.Surveys.baselineScales.map((sc) => sc.id);
+    const rows = [[
+      "session_id", "code", "provider", "autonomy_plan", "status", "angelegt",
+      "runden_abgeschlossen",
+      ...scaleIds.map((id) => "bl_" + id),
+      "ki_frequenz", "ki_kompetenz", "ki_agentenerfahrung",
+      "abschluss_vertrauen_mittel",
+      "kpi_budget_ende", "kpi_umsatz_ende", "kpi_risiko_ende",
+    ]];
+    for (const s of sessions) {
+      const bl = (s.baseline && s.baseline.items) || {};
+      const scaleMeans = scaleIds.map((id) => {
+        const vals = [0, 1, 2].map((i) => bl[`bl_${id}_${i}`]).filter((v) => typeof v === "number");
+        return vals.length ? Math.round((vals.reduce((a, b) => a + b, 0) / vals.length) * 100) / 100 : "";
+      });
+      let finalTrust = "";
+      if (s.final && s.final.trust) {
+        const vals = Object.values(s.final.trust);
+        if (vals.length) finalTrust = Math.round((vals.reduce((a, b) => a + b, 0) / vals.length) * 100) / 100;
+      }
+      rows.push([
+        s.id, s.code, s.provider, s.autonomyPlan, s.status, s.createdAt,
+        s.rounds.filter((r) => r.endedAt).length,
+        ...scaleMeans,
+        s.baseline ? s.baseline.aiFrequency : "",
+        typeof bl.bl_ai_komp === "number" ? bl.bl_ai_komp : "",
+        s.baseline ? s.baseline.aiAgents : "",
+        finalTrust,
+        s.kpi.budget, s.kpi.umsatz, s.kpi.risiko,
+      ]);
+    }
+    return rows;
   }
 
   function stamp() {
@@ -169,13 +197,28 @@
       }
       panel.appendChild(det);
 
-      // Bewertungsraster
+      // Bewertungsraster (kriterienbasiert mit Verhaltensankern)
       if (r.endedAt) {
         const rh = document.createElement("h3");
-        rh.textContent = "Bewertungsraster (Expertenrating 1–5)";
+        rh.textContent = "Expertenrating (1–5, kriterienbasiert)";
         panel.appendChild(rh);
         const selects = {};
         for (const crit of mod.raster) {
+          const box = document.createElement("div");
+          box.className = "kriterium";
+          const lab = document.createElement("label");
+          lab.textContent = crit;
+          box.appendChild(lab);
+          const info = window.RATING_CRITERIA[crit];
+          if (info) {
+            const def = document.createElement("p");
+            def.className = "krit-def";
+            def.textContent = info.def;
+            const anker = document.createElement("p");
+            anker.className = "krit-anker";
+            anker.textContent = `1 — ${info.anker[1]}  ·  3 — ${info.anker[3]}  ·  5 — ${info.anker[5]}`;
+            box.append(def, anker);
+          }
           const sel = document.createElement("select");
           const empty = document.createElement("option");
           empty.value = ""; empty.textContent = "—";
@@ -189,9 +232,8 @@
             sel.value = String(r.rating.criteria[crit]);
           }
           selects[crit] = sel;
-          const lab = document.createElement("label");
-          lab.textContent = crit;
-          panel.append(lab, sel);
+          box.appendChild(sel);
+          panel.appendChild(box);
         }
         const btnSave = document.createElement("button");
         btnSave.textContent = "Rating speichern";
@@ -246,11 +288,42 @@
     download(`katp_alle-sitzungen_${stamp()}.json`, JSON.stringify(all, null, 2), "application/json");
   });
 
-  $("btnExportAllCsv").addEventListener("click", () => {
+  $("btnExportAllXlsx").addEventListener("click", () => {
     const all = window.Store.loadAll();
     if (all.length === 0) { $("listStatus").textContent = "Keine Sitzungen vorhanden."; return; }
-    download(`katp_runden_${stamp()}.csv`, "﻿" + roundsToCsv(all), "text/csv;charset=utf-8");
+    const blob = window.XlsxExport.build([
+      { name: "Runden", rows: roundsMatrix(all) },
+      { name: "Teilnehmende", rows: participantsMatrix(all) },
+    ]);
+    download(`katp_export_${stamp()}.xlsx`, blob);
   });
+
+  // Bewertungsleitfaden rendern (Grundkriterien zuerst, dann Modulkriterien)
+  function renderLeitfaden() {
+    const wrap = $("leitfaden");
+    const entries = Object.entries(window.RATING_CRITERIA);
+    const ordered = entries.filter(([, c]) => !c.modul).concat(entries.filter(([, c]) => c.modul));
+    for (const [name, c] of ordered) {
+      const div = document.createElement("div");
+      div.className = "kriterium";
+      const h = document.createElement("h3");
+      h.textContent = c.modul
+        ? `${name} (Modulkriterium ${c.modul} — ${(window.TASK_MODULES[c.modul] || {}).titel || ""})`
+        : name;
+      const def = document.createElement("p");
+      def.className = "krit-def";
+      def.textContent = c.def;
+      div.append(h, def);
+      for (const stufe of [1, 3, 5]) {
+        const p = document.createElement("p");
+        p.className = "krit-anker";
+        p.textContent = `${stufe} — ${c.anker[stufe]}`;
+        div.appendChild(p);
+      }
+      wrap.appendChild(div);
+    }
+  }
+  renderLeitfaden();
 
   renderList();
 })();
