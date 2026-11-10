@@ -78,7 +78,8 @@ und `admin.html` ergänzen (Studienleitungsdatei nur in `admin.html`).
 2. API-Schlüssel per Netlify AI Gateway oder Umgebungsvariablen `ANTHROPIC_API_KEY`,
    `OPENAI_API_KEY`, `GEMINI_API_KEY`; optional Modelle via `ANTHROPIC_MODEL`
    (Standard `claude-sonnet-5`), `OPENAI_MODEL` (`gpt-5`), `GEMINI_MODEL`
-   (`gemini-2.5-flash`); Open Source via `OSS_BASE_URL`, `OSS_MODEL`, `OSS_API_KEY`.
+   (`gemini-2.5-flash`); Open Source via `OSS_BASE_URL`, `OSS_MODEL`, `OSS_API_KEY`;
+   optional `AGENT_TIMEOUT_MS` (Standard 55000, zulässig 10000–58000).
 3. **Zugriffsschutz empfohlen** (Passwortschutz des Deploys): Der Studienleitungsteil
    (Musterlösung, Fallen) ist als statische Datei technisch abrufbar, und `/api/agent`
    ist nur durch Größen- und Zeitlimits geschützt.
@@ -96,7 +97,9 @@ erfordern `netlify dev`.
 - Sitzungen der früheren Rundenfassung (E1–E6) bleiben im Browser unter
   `katp_sessions_v1` erhalten und lassen sich in der Forschungsansicht als JSON sichern.
 - Pretest (3–5 Personen) vor der Hauptstudie: Bearbeitungszeit, Verständlichkeit und die
-  Antwortzeit der Erstfassung in der Variante „Autonomie hoch“ (Zeitbudget der Function 22 s).
+  Antwortzeit der Erstfassung in der Variante „Autonomie hoch“. Zeitbudget der Function: 55 s
+  (Netlify-Limit für synchrone Functions: 60 s), anpassbar über die Umgebungsvariable
+  `AGENT_TIMEOUT_MS`.
 
 ## Lizenz
 

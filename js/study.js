@@ -295,6 +295,12 @@
     sending = true;
     $("btnSenden").disabled = true;
     setStatus("chatStatus", "Der KI-Assistent arbeitet …");
+    const t0 = Date.now();
+    const warte = setInterval(() => {
+      const s = Math.round((Date.now() - t0) / 1000);
+      setStatus("chatStatus", `Der KI-Assistent arbeitet … (${s} s` +
+        (s >= 20 ? "; längere Texte können bis zu einer Minute dauern)" : ")"));
+    }, 1000);
     const userEntry = { role: "user", content: userMsg, auto: !!auto, timestamp: new Date().toISOString() };
     task.interactions.push(userEntry);
     appendMsgEl(userEntry);
@@ -323,6 +329,7 @@
         $("chatStatus").appendChild(retry);
       }
     } finally {
+      clearInterval(warte);
       save();
       sending = false;
       $("btnSenden").disabled = false;

@@ -6,13 +6,15 @@
    GEMINI_API_KEY. Modelle ueberschreibbar via ANTHROPIC_MODEL / OPENAI_MODEL / GEMINI_MODEL.
    Vierter Anbieter "opensource": beliebiger OpenAI-kompatibler Endpunkt fuer offene Modelle
    (z. B. Ollama, vLLM, Groq, Together) via OSS_BASE_URL + OSS_MODEL, optional OSS_API_KEY.
-   Zeitbudget 22 s (synchrone Netlify Functions brechen bei max. 26 s ab). */
+   Zeitbudget standardmäßig 55 s: Synchrone Netlify Functions haben laut Netlify-Doku
+   (Stand Nov. 2026) ein festes Ausführungslimit von 60 s; die frühere Grenze von 10/26 s
+   gilt nicht mehr. Über AGENT_TIMEOUT_MS anpassbar (10–58 s). */
 
 const MAX_MESSAGES = 60;
 const MAX_TOTAL_CHARS = 120000;
 const MAX_SYSTEM_CHARS = 40000; // Prüfmodule übergeben alle Dokumente im Systemprompt
 const DEFAULT_MAX_TOKENS = 1600;
-const TIMEOUT_MS = 22000;
+const TIMEOUT_MS = Math.min(Math.max(Number(process.env.AGENT_TIMEOUT_MS) || 55000, 10000), 58000);
 
 const MODELS: Record<string, string> = {
   anthropic: process.env.ANTHROPIC_MODEL || "claude-sonnet-5",
@@ -196,7 +198,7 @@ export default async (req: Request): Promise<Response> => {
     const msg = err instanceof Error ? err.message : String(err);
     const timeout = /abort/i.test(msg);
     return Response.json(
-      { error: timeout ? "Zeitüberschreitung beim Modellaufruf (22 s)." : msg },
+      { error: timeout ? `Zeitüberschreitung beim Modellaufruf (${Math.round(TIMEOUT_MS / 1000)} s).` : msg },
       { status: timeout ? 504 : 502 }
     );
   }
