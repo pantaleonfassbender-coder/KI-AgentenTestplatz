@@ -62,8 +62,8 @@
 
       <h3>1. Grundprinzip: lokale Speicherung</h3>
       <p>
-        Alle Studiendaten — Fragebogenantworten, Entscheidungen, Chat-Protokolle,
-        Zeitstempel, Kennzahlen — werden ausschließlich <strong>lokal im Browser des
+        Alle Studiendaten — Fragebogenantworten, Endtexte, Chat-Protokolle,
+        Zeitstempel (einschließlich der Ansicht der Unterlagen), Bewertungen — werden ausschließlich <strong>lokal im Browser des
         Erhebungsgeräts</strong> gespeichert (localStorage). Es gibt keine Benutzerkonten,
         keine serverseitige Datenbank und keine Übertragung von Studiendaten an den
         Anbieter dieser Seite. Der Export erfolgt als lokaler Dateidownload durch die
@@ -84,8 +84,9 @@
       <p>
         Kernfunktion der Plattform ist die Zusammenarbeit mit einem KI-Agenten. Wenn eine
         Nachricht an den Agenten gesendet wird, überträgt eine Serverfunktion
-        (<code>/api/agent</code>, betrieben auf Netlify) den Aufgabenkontext und die
-        Chat-Nachrichten der laufenden Runde an <strong>genau einen</strong> der folgenden
+        (<code>/api/agent</code>, betrieben auf Netlify) den Aufgabenkontext (Aufgabenstellung
+        und fiktive Unterlagen des Prüfmoduls) und die Chat-Nachrichten der laufenden
+        Sitzung an <strong>genau einen</strong> der folgenden
         Empfänger — je nach Sitzungseinstellung:
       </p>
       <ul>
@@ -102,7 +103,7 @@
         Bewertungen und alle übrigen Studiendaten.
       </p>
       <p>
-        In der <strong>Kontrollbedingung ohne KI</strong> (Postkorb-Bearbeitung) findet
+        In der <strong>Variante ohne KI</strong> (Postkorb-Bearbeitung) findet
         keinerlei Übermittlung an Modellanbieter statt; sämtliche Eingaben verbleiben
         lokal im Browser.
       </p>

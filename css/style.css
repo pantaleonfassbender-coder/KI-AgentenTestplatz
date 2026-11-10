@@ -281,3 +281,73 @@ footer.site a { color: var(--accent); }
   .msg.human { margin-left: 0.5rem; }
   .msg.agent { margin-right: 0.5rem; }
 }
+
+/* ---- Modulare Fassung: Bearbeitungsansicht, Dokumente, Rating ---- */
+header.site.kompakt { padding: 0.8rem 1rem 0.6rem; }
+header.site.kompakt h1 { font-size: 1.3rem; }
+body.breit main { max-width: 96rem; }
+
+.arbeit-kopf {
+  position: sticky; top: 0; z-index: 5;
+  display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;
+  background: var(--bg); border-bottom: 1px solid var(--line);
+  padding: 0.6rem 0; font-family: system-ui, sans-serif; font-size: 0.95rem;
+}
+.uhr { font-family: system-ui, sans-serif; font-variant-numeric: tabular-nums; font-weight: 600;
+  background: var(--soft); border: 1px solid var(--line); border-radius: 4px; padding: 0.3rem 0.8rem; }
+.uhr.knapp { color: var(--bad); border-color: var(--bad); }
+
+.arbeit-raster { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; align-items: start; }
+.arbeit-raster > .panel, .werkbank > .panel { margin: 0.8rem 0; }
+.unterlagen { position: sticky; top: 3.4rem; }
+@media (max-width: 900px) {
+  .arbeit-raster { grid-template-columns: 1fr; }
+  .unterlagen { position: static; }
+}
+
+.tabs { display: flex; flex-wrap: wrap; gap: 0.3rem; border-bottom: 1px solid var(--line); padding-bottom: 0.5rem; }
+.tabs .tab { background: transparent; color: var(--accent); border: 1px solid var(--line); margin: 0;
+  padding: 0.3rem 0.7rem; font-size: 0.85rem; }
+.tabs .tab.aktiv { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.dok-ansicht { max-height: calc(100vh - 11rem); overflow-y: auto; padding-right: 0.3rem; }
+@media (max-width: 900px) { .dok-ansicht { max-height: none; } }
+
+.dokument { border-top: 1px solid var(--line); padding-top: 0.6rem; margin-top: 0.6rem; }
+.dok-ansicht .dokument { border-top: 0; margin-top: 0; }
+.dokument h3 { margin: 0.2rem 0 0.6rem; }
+.dokument h4 { font-size: 0.98rem; margin: 1rem 0 0.3rem; }
+.dokument p { white-space: pre-line; }
+.dok-nr { font-family: system-ui, sans-serif; font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+.dok-kopf { display: grid; grid-template-columns: max-content 1fr; gap: 0.15rem 0.8rem; margin: 0 0 0.8rem;
+  padding: 0.6rem 0.8rem; background: var(--soft); border-radius: 4px; font-family: system-ui, sans-serif; font-size: 0.85rem; }
+.dok-kopf dt { color: var(--muted); }
+.dok-kopf dd { margin: 0; }
+
+.endtext { min-height: 26rem; font-size: 0.98rem; line-height: 1.5; }
+.wortzahl { font-family: system-ui, sans-serif; font-size: 0.85rem; color: var(--muted); margin: 0.3rem 0; }
+.warnung-text { color: var(--warn); }
+.chatlog { max-height: 22rem; }
+.msg-aktionen { margin-top: 0.4rem; }
+button.klein { font-size: 0.8rem; padding: 0.25rem 0.7rem; }
+
+.endtext-anzeige { white-space: pre-wrap; border: 1px solid var(--line); border-radius: 4px; padding: 0.8rem 1rem;
+  background: var(--panel); max-height: 32rem; overflow-y: auto; }
+pre.prompt { white-space: pre-wrap; font-size: 0.8rem; background: var(--soft); padding: 0.8rem; border-radius: 4px;
+  max-height: 24rem; overflow-y: auto; }
+details { margin: 0.6rem 0; }
+details > summary { cursor: pointer; font-family: system-ui, sans-serif; font-size: 0.95rem; color: var(--accent); }
+.aufklapp-inhalt { padding: 0.3rem 0 0.3rem 0.8rem; border-left: 2px solid var(--line); margin-top: 0.4rem; }
+.tabelle-scroll { overflow-x: auto; }
+tr.geplant, .panel.geplant { opacity: 0.65; }
+
+.zeile { display: flex; gap: 1rem; flex-wrap: wrap; }
+.zeile > div { flex: 1 1 12rem; }
+label.check { display: block; font-size: 0.88rem; margin: 0.25rem 0; }
+.kachel-liste { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.kachel { background: transparent; color: var(--accent); font-variant-numeric: tabular-nums; }
+.kachel.erledigt { background: var(--soft); color: var(--good); border-color: var(--good); }
+.rating-panel { border-color: var(--accent); }
+
+.datei-knopf { display: inline-block; font-family: system-ui, sans-serif; font-size: 0.95rem; padding: 0.55rem 1.2rem;
+  border: 1px solid var(--accent); border-radius: 4px; color: var(--accent); cursor: pointer; margin: 0.3rem 0.3rem 0.3rem 0; }
+.datei-knopf input { display: none; }

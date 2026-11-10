@@ -7,14 +7,9 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <header class="site">
+  <header class="site kompakt">
     <h1>KI-AgentenTestplatz</h1>
     <div class="untertitel">Erhebungssitzung</div>
-    <nav class="haupt">
-      <a href="index.html">Start</a>
-      <a href="admin.html">Forschungsansicht</a>
-      <a href="legal.html">Impressum &amp; Datenschutz</a>
-    </nav>
   </header>
 
   <main>
@@ -24,96 +19,90 @@
     <section id="viewConsent" class="panel verborgen">
       <h2>Teilnahmeinformation und Einverständnis</h2>
       <ul>
-        <li>Sie bearbeiten mehrere unternehmerische Aufgaben einer <strong>fiktiven</strong> Organisation
-          gemeinsam mit einem KI-Agenten. Sämtliche Unternehmens- und Personendaten in den Aufgaben
-          sind frei erfunden.</li>
-        <li>Erfasst werden Ihre Chat-Eingaben, die Antworten des Agenten, Ihre Entscheidungen,
-          Zeitstempel sowie Ihre Fragebogenantworten. Die Daten werden unter einem pseudonymen
-          Teilnahmecode <strong>ausschließlich lokal auf diesem Gerät</strong> gespeichert.</li>
-        <li id="consentTransfer">Ihre Chat-Nachrichten werden zur Verarbeitung an den
-          Modellanbieter dieser Sitzung übermittelt. Geben Sie daher keine realen
+        <li>Sie bearbeiten eine Arbeitsaufgabe in einer <strong>fiktiven</strong> Organisation.
+          Sämtliche Unternehmens- und Personendaten in den Unterlagen sind frei erfunden.</li>
+        <li>Erfasst werden Ihre Texteingaben, gegebenenfalls Ihre Nachrichten an den KI-Assistenten
+          und dessen Antworten, Zeitstempel (einschließlich der Ansicht der Unterlagen) sowie Ihre
+          Fragebogenantworten. Die Daten werden unter einem pseudonymen Teilnahmecode
+          <strong>ausschließlich lokal auf diesem Gerät</strong> gespeichert.</li>
+        <li id="consentTransfer">Ihre Nachrichten an den KI-Assistenten werden zur Verarbeitung an
+          den Modellanbieter dieser Sitzung übermittelt. Geben Sie daher keine realen
           personenbezogenen Daten und keine Geschäftsgeheimnisse ein.</li>
         <li>Die Teilnahme ist freiwillig; Sie können jederzeit ohne Angabe von Gründen abbrechen.</li>
       </ul>
       <label class="likert"><input type="checkbox" id="consentCheck">
         Ich habe die Informationen gelesen und bin mit der Teilnahme einverstanden.</label>
-      <button id="btnConsent" disabled>Weiter zur Vorbefragung</button>
+      <button id="btnConsent" disabled>Weiter</button>
     </section>
 
-    <!-- Baseline -->
+    <!-- Vorbefragung -->
     <section id="viewBaseline" class="panel verborgen">
       <h2>Vorbefragung</h2>
       <p>Bitte geben Sie an, wie sehr die folgenden Aussagen auf Sie zutreffen
         (1&nbsp;=&nbsp;trifft gar nicht zu, 7&nbsp;=&nbsp;trifft voll zu).</p>
       <form id="baselineForm"></form>
-      <button id="btnBaseline">Vorbefragung abschließen und Simulation starten</button>
+      <button id="btnBaseline">Vorbefragung abschließen</button>
       <p class="status" id="baselineStatus"></p>
     </section>
 
-    <!-- Runde -->
-    <section id="viewRound" class="verborgen">
-      <div class="fortschritt" id="rundenFortschritt"></div>
-      <div class="panel">
-        <div class="meta-leiste" id="rundenMeta"></div>
-        <div class="kpi-leiste" id="kpiLeiste"></div>
-        <div class="hinweis" id="kpiDelta"></div>
-        <h2 id="modulTitel"></h2>
-        <p id="modulSzenario"></p>
-        <table id="modulDaten"></table>
-        <div class="hinweis"><strong>Bearbeitungsauftrag:</strong> <span id="modulAuftrag"></span></div>
-      </div>
+    <!-- Instruktion vor dem Start -->
+    <section id="viewInstruktion" class="panel verborgen">
+      <h2 id="instrTitel"></h2>
+      <div id="instrInhalt"></div>
+      <div class="hinweis" id="instrVariante"></div>
+      <div class="hinweis warnung" id="instrZeit"></div>
+      <button id="btnStart">Bearbeitung starten</button>
+    </section>
 
-      <div class="panel" id="chatPanel">
-        <h3>Zusammenarbeit mit dem Agenten</h3>
-        <div class="chatlog" id="chatlog"></div>
-        <div class="chat-steuer">
-          <div class="rollenwahl">
-            <label for="rolleSelect">Agentenrolle</label>
-            <select id="rolleSelect"></select>
-          </div>
-          <textarea id="chatEingabe" placeholder="Nachricht an den Agenten …"></textarea>
-          <button id="btnSenden">Senden</button>
+    <!-- Bearbeitung -->
+    <section id="viewArbeit" class="verborgen">
+      <div class="arbeit-kopf">
+        <div><strong id="arbeitTitel"></strong> <span class="status" id="arbeitMeta"></span></div>
+        <div class="uhr" id="uhr" aria-live="polite"></div>
+      </div>
+      <div class="hinweis warnung verborgen" id="zeitHinweis">Die vorgesehene Bearbeitungszeit ist
+        abgelaufen. Bitte schließen Sie Ihre Bewertung jetzt ab und geben Sie sie ab.</div>
+      <div class="arbeit-raster">
+        <div class="unterlagen panel">
+          <div class="tabs" id="dokTabs" role="tablist"></div>
+          <div class="dok-ansicht" id="dokAnsicht"></div>
         </div>
-        <p class="status" id="chatStatus"></p>
-      </div>
-
-      <div class="panel">
-        <h3>Finale Entscheidung</h3>
-        <p id="entscheidungHinweis">Formulieren Sie hier Ihr Endergebnis bzw. Ihre finale
-           Entscheidung für diese Runde. Sie — nicht der Agent — verantworten die Abgabe.</p>
-        <textarea id="entscheidung" placeholder="Finale Entscheidung / Endergebnis …"></textarea>
-        <label for="erfolgProb">Wie wahrscheinlich ist es aus Ihrer Sicht, dass sich diese Entscheidung
-          für die NordTec GmbH als richtig erweist? <span class="range-wert" id="erfolgProbWert">50&nbsp;%</span></label>
-        <input type="range" id="erfolgProb" min="0" max="100" value="50">
-        <button id="btnAbgeben">Entscheidung abgeben</button>
-        <p class="status" id="abgabeStatus"></p>
+        <div class="werkbank">
+          <div class="panel" id="chatPanel">
+            <h3>KI-Assistent</h3>
+            <div class="chatlog" id="chatlog"></div>
+            <div class="chat-steuer">
+              <textarea id="chatEingabe" placeholder="Nachricht an den KI-Assistenten … (Strg+Enter sendet)"></textarea>
+              <button id="btnSenden">Senden</button>
+            </div>
+            <p class="status" id="chatStatus"></p>
+          </div>
+          <div class="panel">
+            <h3 id="ergebnisLabel"></h3>
+            <p class="status" id="ergebnisHinweis"></p>
+            <textarea id="endtext" class="endtext"></textarea>
+            <div class="wortzahl" id="wortzahl"></div>
+            <button id="btnAbgeben">Endgültig abgeben</button>
+            <p class="status" id="abgabeStatus"></p>
+          </div>
+        </div>
       </div>
     </section>
 
-    <!-- Kurzerhebung nach der Runde -->
-    <section id="viewSurvey" class="panel verborgen">
-      <h2>Kurzbefragung zur Runde</h2>
-      <form id="surveyForm"></form>
-      <button id="btnSurvey">Weiter</button>
-      <p class="status" id="surveyStatus"></p>
-    </section>
-
-    <!-- Abschlusserhebung -->
-    <section id="viewFinal" class="panel verborgen">
-      <h2>Abschlussbefragung</h2>
-      <p>Bitte beziehen Sie die folgenden Aussagen auf den KI-Agenten, mit dem Sie
-        in dieser Sitzung gearbeitet haben (1&nbsp;=&nbsp;trifft gar nicht zu, 7&nbsp;=&nbsp;trifft voll zu).</p>
-      <form id="finalForm"></form>
-      <button id="btnFinal">Sitzung abschließen</button>
-      <p class="status" id="finalStatus"></p>
+    <!-- Kurzfragebogen -->
+    <section id="viewKurzbogen" class="panel verborgen">
+      <h2>Kurzfragebogen</h2>
+      <p id="kurzbogenSkala"></p>
+      <form id="kurzbogenForm"></form>
+      <button id="btnKurzbogen">Sitzung abschließen</button>
+      <p class="status" id="kurzbogenStatus"></p>
     </section>
 
     <!-- Ende -->
     <section id="viewDone" class="panel verborgen">
       <h2>Vielen Dank!</h2>
-      <p>Die Sitzung ist abgeschlossen. Die Daten liegen lokal auf diesem Gerät und können
-        von der Studienleitung über die <a href="admin.html">Forschungsansicht</a> exportiert werden.</p>
-      <div class="kpi-leiste" id="doneKpi"></div>
+      <p>Die Sitzung ist abgeschlossen. Ihre Angaben liegen lokal auf diesem Gerät und werden
+        von der Studienleitung ausgewertet. Bitte geben Sie das Gerät an die Studienleitung zurück.</p>
     </section>
   </main>
 
@@ -121,9 +110,11 @@
     KI-AgentenTestplatz · <a href="legal.html">Impressum &amp; Datenschutz</a>
   </footer>
 
-  <script src="js/tasks-data.js"></script>
+  <script src="js/platform.js"></script>
+  <script src="js/modules/mitarbeiterbewertung.js"></script>
   <script src="js/store.js"></script>
-  <script src="js/engine.js"></script>
+  <script src="js/session.js"></script>
+  <script src="js/metrics.js"></script>
   <script src="js/api-client.js"></script>
   <script src="js/surveys.js"></script>
   <script src="js/study.js"></script>

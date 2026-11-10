@@ -9,10 +9,13 @@
 <body>
   <header class="site">
     <h1>KI-AgentenTestplatz</h1>
-    <div class="untertitel">Forschungsansicht: Sitzungen, Bewertungsraster, Export</div>
+    <div class="untertitel">Forschungsansicht: Modulunterlagen, Sitzungen, Blind-Rating, Export</div>
     <nav class="haupt">
       <a href="index.html">Start</a>
-      <a href="study.html">Sitzung</a>
+      <a href="#unterlagen">Modulunterlagen</a>
+      <a href="#sitzungen">Sitzungen</a>
+      <a href="#rating">Blind-Rating</a>
+      <a href="#fragebogen">Vorbefragung</a>
       <a href="legal.html">Impressum &amp; Datenschutz</a>
     </nav>
   </header>
@@ -21,76 +24,92 @@
     <section class="panel">
       <h2>Forschungsfragen</h2>
       <ul>
-        <li><strong>F1</strong> — Wie unterscheidet sich die Entscheidungsqualität zwischen
-          Aufgabentypen (Planung, Durchführung, Kontrolle, Führung) bei Zusammenarbeit mit einem
-          KI-Agenten im Vergleich zu rein menschlicher Bearbeitung (Postkorb-Kontrollbedingung)?</li>
-        <li><strong>F2</strong> — Wie verändert sich das Vertrauen in den KI-Agenten über
-          aufeinanderfolgende Runden, insbesondere nach sichtbaren Fehlern des Agenten?</li>
+        <li><strong>F1</strong> — Wie unterscheidet sich die Ergebnisqualität in den Dimensionen
+          Analyse, Planung, Durchführung und Kontrolle zwischen Bearbeitung ohne KI, mit
+          KI-Unterstützung (Autonomie niedrig) und mit hoch autonomem KI-Assistenten?</li>
+        <li><strong>F2</strong> — Wie hängen Vertrauen und Prüfverhalten gegenüber dem Agenten mit
+          der Übernahme von KI-Aussagen, falschen Tatsachenangaben und dem Erkennen von
+          KI-Fallen zusammen?</li>
         <li><strong>F3</strong> — Welcher Zusammenhang besteht zwischen berufsbezogenen
-          Persönlichkeitsmerkmalen (Leistungsmotivation, Flexibilität, Durchsetzungsstärke,
-          Belastbarkeit) und Intensität sowie Qualität der Mensch-KI-Zusammenarbeit?</li>
+          Persönlichkeitsmerkmalen (Vorbefragung) und Intensität sowie Qualität der
+          Mensch-KI-Zusammenarbeit?</li>
         <li><strong>F4</strong> — Unterscheiden sich die Anbieter (Claude, GPT, Gemini,
-          Open-Source-Modell) in ihrem Beitrag zu ökonomischem Erfolg und wahrgenommener
-          Zusammenarbeitsqualität?</li>
-        <li><strong>F5</strong> — Wie wirkt sich der Autonomiegrad des Agenten (Vorschlag vs.
-          eigenständige Ausführung mit Kontrolle) auf Risikoeinschätzung und Erfolg aus?</li>
-        <li><strong>F6</strong> — Unterscheidet sich die Rollenverteilung zwischen Mensch und
-          Agent bei sachbezogenen Analyseaufgaben von personenbezogenen Bewertungsaufgaben?</li>
+          Open-Source-Modell) in ihrem Beitrag zur Ergebnisqualität?</li>
+        <li><strong>F5</strong> — Wie wirkt der Autonomiegrad auf Ergebnisqualität,
+          Bearbeitungszeit, Übernahmequote und wahrgenommene Arbeitslast?</li>
+        <li><strong>F6</strong> — Unterscheiden sich Rollenverteilung und Fehlerbilder (Mensch-
+          vs. KI-Fallen) zwischen personenbezogenen und sachbezogenen Prüfmodulen?</li>
       </ul>
-      <p class="status">Zuordnung der Messgrößen: Entscheidungsqualität → Bewertungsraster
-        (unten je Runde), Vertrauensverlauf → Kurzerhebung je Runde, Persönlichkeit →
-        Baseline-Skalen, Reliance → Reliance-Index + Protokolle (Export).</p>
     </section>
 
     <div class="hinweis">
-      Alle Daten liegen ausschließlich im Browser dieses Geräts. Export als JSON
-      (vollständig, inkl. Interaktionsprotokolle) oder als Excel-Arbeitsmappe
-      (Blatt „Runden": eine Zeile je Runde; Blatt „Teilnehmende": eine Zeile je Person;
-      Blatt „Texte": eine Zeile je Texteinheit — Chat-Beiträge von Person und Agent,
-      finale Entscheidungen, offene Abschlussantworten — mit Metadatenspalten und
-      Spalte „text" für die psycholinguistische Auswertung, z.&nbsp;B. mit LIWC-22).
-      Die Bewertung der Entscheidungsqualität erfolgt hier nachträglich anhand des
-      Bewertungsleitfadens (1&nbsp;=&nbsp;unzureichend, 5&nbsp;=&nbsp;exzellent).
+      Alle Daten liegen ausschließlich im Browser dieses Geräts. Export als JSON (vollständig)
+      oder als Excel-Arbeitsmappe (Blätter „Sitzungen", „Ratings", „Texte", „Ereignisse").
+      Über „JSON importieren" lassen sich Sitzungen anderer Erhebungsstationen und Ratings
+      anderer Rater:innen zusammenführen.
     </div>
 
-    <section class="panel">
-      <h2>Bewertungsleitfaden (kriterienbasiertes Expertenrating)</h2>
-      <p>Jede abgeschlossene Runde wird anhand von fünf Grundkriterien und einem
-        modulspezifischen Kriterium auf einer 5-Punkte-Skala bewertet. Die
-        Verhaltensanker beschreiben die Stufen 1, 3 und 5; die Stufen 2 und 4 sind
-        Zwischenwerte. Bewertungsregeln: erst das vollständige Interaktionsprotokoll
-        und die finale Entscheidung lesen, dann jedes Kriterium <strong>unabhängig</strong>
-        von den anderen bewerten (kein Gesamteindrucksurteil), im Zweifel den Anker
-        wählen, dessen Beschreibung dem beobachteten Verhalten am nächsten kommt.</p>
-      <div id="leitfaden"></div>
+    <section class="panel" id="unterlagen">
+      <h2>Modulunterlagen für die Studienleitung</h2>
+      <label for="ulModul">Prüfmodul</label>
+      <select id="ulModul"></select>
+      <div id="ulInhalt"></div>
     </section>
 
-    <section class="panel">
+    <section class="panel" id="sitzungen">
       <h2>Sitzungen</h2>
       <table id="sessionTabelle">
         <thead>
-          <tr><th>Code</th><th>Anbieter</th><th>Autonomie</th><th>Runden</th><th>Status</th><th>Angelegt</th><th>Aktionen</th></tr>
+          <tr><th>Code</th><th>Modul</th><th>Variante</th><th>Anbieter</th><th>Status</th><th>Wörter</th><th>Dauer</th><th>Ratings</th><th>Aktionen</th></tr>
         </thead>
         <tbody></tbody>
       </table>
+      <button id="btnExportAllXlsx">Alle Daten als Excel-Datei exportieren</button>
       <button id="btnExportAllJson" class="sekundaer">Alle Sitzungen als JSON exportieren</button>
-      <button id="btnExportAllXlsx" class="sekundaer">Alle Daten als Excel-Datei exportieren</button>
+      <label class="datei-knopf sekundaer">JSON importieren
+        <input type="file" id="importDatei" accept="application/json,.json"></label>
+      <button id="btnLegacy" class="sekundaer verborgen">Altdaten (Rundenfassung E1–E6) sichern</button>
       <p class="status" id="listStatus"></p>
     </section>
 
-    <section class="panel">
-      <h2>Fragebogen-Editor (modulare Instrumente)</h2>
-      <p>Die Erhebungsinstrumente sind als Konfiguration hinterlegt und können hier
-        angepasst werden: Items ergänzen oder umformulieren, Baseline-Skalen hinzufügen
-        (z.&nbsp;B. Resilienz), offene Fragen ändern. Die Anpassung gilt für
-        <strong>neu angelegte Sitzungen</strong> auf diesem Gerät; jede Sitzung
-        protokolliert die Versionskennung ihrer Instrumentenfassung
-        (Spalte <code>fragebogen_version</code> im Export).</p>
+    <section id="detail" class="verborgen">
+      <h2 id="detailTitel"></h2>
+      <div id="detailInhalt"></div>
+    </section>
+
+    <section class="panel" id="rating">
+      <h2>Blind-Rating</h2>
+      <p>Rater:innen sehen nur den Endtext unter einer neutralen Kennung — ohne Variante,
+        Anbieter, Teilnahmecode und Interaktionsprotokoll. Jede Bewertung wird unter dem
+        Rater-Kürzel gespeichert; mindestens zwei Rater:innen je Text. Kriterien unabhängig
+        voneinander bewerten (kein Gesamteindruck), Stufen 2 und 4 liegen zwischen den Ankern.
+        Falsche Tatsachenangaben gegen das Faktenblatt (Modulunterlagen) zählen.</p>
+      <div class="zeile">
+        <div>
+          <label for="raterKuerzel">Rater-Kürzel</label>
+          <input type="text" id="raterKuerzel" maxlength="12" autocomplete="off" placeholder="z. B. UK">
+        </div>
+        <div>
+          <label for="ratingModul">Prüfmodul</label>
+          <select id="ratingModul"></select>
+        </div>
+      </div>
+      <button id="btnRatingStart">Texte laden</button>
+      <p class="status" id="ratingStatus"></p>
+      <div id="ratingListe"></div>
+      <div id="ratingForm"></div>
+    </section>
+
+    <section class="panel" id="fragebogen">
+      <h2>Vorbefragung (modulunabhängige Instrumente)</h2>
+      <p>Die Vorbefragung ist als Konfiguration hinterlegt und kann hier angepasst werden
+        (Items ergänzen oder umformulieren, Skalen hinzufügen, z.&nbsp;B. Resilienz). Die
+        Anpassung gilt für <strong>neu angelegte Sitzungen</strong> auf diesem Gerät; jede
+        Sitzung protokolliert die Versionskennung (Spalte <code>fragebogen_version</code>).
+        Der Kurzfragebogen nach der Abgabe gehört zum jeweiligen Prüfmodul.</p>
       <div class="hinweis warnung">
-        Während einer laufenden Erhebungswelle sollten Skalen-IDs und bestehende
-        Item-Formulierungen nicht verändert werden — sonst sind Sitzungen nicht mehr
-        vergleichbar. Neue Items/Skalen ergänzen und die <code>version</code>-Kennung
-        hochzählen; Auswertung dann getrennt nach <code>fragebogen_version</code>.
+        Während einer laufenden Erhebungswelle Skalen-IDs und bestehende Formulierungen nicht
+        verändern; neue Items ergänzen und die <code>version</code>-Kennung hochzählen.
       </div>
       <p class="status" id="surveysStatusZeile"></p>
       <label for="surveysEditor">Aktive Konfiguration (JSON)</label>
@@ -100,20 +119,18 @@
       <button id="btnSurveysExport" class="sekundaer">Konfiguration als Datei sichern</button>
       <p class="status" id="surveysStatus"></p>
     </section>
-
-    <section id="detail" class="verborgen">
-      <h2 id="detailTitel"></h2>
-      <div id="detailInhalt"></div>
-    </section>
   </main>
 
   <footer class="site">
     KI-AgentenTestplatz · <a href="legal.html">Impressum &amp; Datenschutz</a>
   </footer>
 
-  <script src="js/tasks-data.js"></script>
+  <script src="js/platform.js"></script>
+  <script src="js/modules/mitarbeiterbewertung.js"></script>
+  <script src="js/modules/mitarbeiterbewertung.studienleitung.js"></script>
   <script src="js/store.js"></script>
-  <script src="js/engine.js"></script>
+  <script src="js/session.js"></script>
+  <script src="js/metrics.js"></script>
   <script src="js/surveys.js"></script>
   <script src="js/xlsx-export.js"></script>
   <script src="js/admin.js"></script>

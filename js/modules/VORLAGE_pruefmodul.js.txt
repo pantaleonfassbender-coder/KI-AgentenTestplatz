@@ -1,0 +1,76 @@
+/* VORLAGE für ein neues Prüfmodul (z. B. Wettbewerbsanalyse, Angebotsbewertung).
+   Vorgehen:
+   1. Diese Datei zweimal kopieren:
+        js/modules/<id>.js                 (teilnehmendenseitig)
+        js/modules/<id>.studienleitung.js  (nur Forschungsansicht)
+   2. Felder ausfüllen (Struktur wie js/modules/mitarbeiterbewertung*.js).
+   3. Script-Tags ergänzen:
+        <id>.js                -> index.html, study.html, admin.html
+        <id>.studienleitung.js -> NUR admin.html
+   4. Ggf. Eintrag aus KATP.GEPLANT in js/platform.js entfernen.
+   Rendering, Varianten, Kurzfragebogen, Blind-Rating und Export passen sich automatisch an. */
+
+/* ---------- <id>.js ---------- */
+window.KATP.registerModule({
+  id: "wettbewerbsanalyse",            // a-z, 0-9, -
+  kennung: "WA-NORDTEC-01",
+  titel: "Wettbewerbsanalyse",
+  untertitel: "…",
+  gegenstandsbereich: "Markt und Wettbewerb",
+  aufgabentyp: "sachbezogen",          // sachbezogen | personenbezogen
+  status: "aktiv",                     // "entwurf" blendet das Modul aus
+  autorin: "…",
+  stand: "…",
+  zeit: { richtMin: 30, limitMin: 60 },
+  woerter: { min: 400, max: 600 },
+  ergebnisLabel: "Ihre Analyse",
+  ergebnisPlatzhalter: "1. …\n\n2. …",
+
+  /* Pflicht: Zuordnung jeder Dimension des Rahmenmodells. */
+  dimensionen: {
+    analyse:       { teilleistung: "…", gliederung: "…" },
+    planung:       { teilleistung: "…", gliederung: "…" },
+    durchfuehrung: { teilleistung: "…", gliederung: "…" },
+    kontrolle:     { teilleistung: "…", gliederung: "…" },
+  },
+
+  /* Inhaltsblöcke: {p:"Absatz"}, {h:"Zwischenüberschrift"}, {ul:[…]}, {ol:[…]},
+     {table:{head:[…], rows:[[…]], rowHead:true}} */
+  instruktion: { titel: "Instruktion für Teilnehmende", inhalt: [ { p: "…" } ] },
+
+  dokumente: [
+    { nr: 1, kurz: "Kurzname für Reiter", titel: "Dokumenttitel",
+      kopf: [["Von", "…"], ["Datum", "…"]],
+      inhalt: [ { p: "…" } ] },
+  ],
+
+  kurzfragebogen: {
+    skala: { min: 1, max: 5, minLabel: "stimme gar nicht zu", maxLabel: "stimme voll zu" },
+    items: [
+      { id: "i1_vertrauen", text: "Ich habe der Einschätzung der KI vertraut.", nurKI: true },
+      { id: "i3_anstrengung", text: "Die Aufgabe war geistig anstrengend." },
+    ],
+  },
+
+  agent: {
+    maxTokens: 2500,
+    basis: "Du bist ein KI-Agent in einer wissenschaftlichen Studie … (identisch für alle KI-Varianten)",
+  },
+});
+
+/* ---------- <id>.studienleitung.js ---------- */
+window.KATP.registerStudienleitung("wettbewerbsanalyse", {
+  quelle: "…",
+  profil: { kern: "…", punkte: [["Stichwort", "…"]] },
+  widersprueche: [ { id: "W1", titel: "…", fundstellen: "…", aufloesung: "…" } ],
+  fallen: [ { id: "K1", typ: "KI-Falle", titel: "…", fundstelle: "…", fehlerbild: "…" } ],
+  raster: [   // dimension: analyse | planung | durchfuehrung | kontrolle
+    { id: "kriterium1", name: "…", dimension: "analyse", anker: { 1: "…", 3: "…", 5: "…" } },
+  ],
+  zaehlungen: [ { id: "W", name: "Erkannte Widersprüche", frage: "benannt", dimension: "analyse", items: ["W1"] } ],
+  falscheAngabenHinweis: "…",
+  messgroessen: [["Messgröße", "Erhebung", "Skala", "dimension-id oder —"]],
+  standardisierung: ["…"],
+  musterloesung: [ { p: "…" } ],
+  faktenblatt: [["Bereich", "Fakten"]],
+});

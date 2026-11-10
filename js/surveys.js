@@ -5,11 +5,12 @@
    aktive Fassung; jede Sitzung protokolliert deren Versionskennung.
    Baseline-Kurzskalen: EIGENE Formulierungen in Anlehnung an die vier BIP-Bereiche
    (Hossiep & Paschen, 2019) — kein Originalmaterial des lizenzierten Verfahrens.
-   NASA-TLX-Kurzform nach Hart & Staveland (1988); Abschlussskala in Anlehnung an
-   Lee & See (2004). */
+   Seit der Modularisierung (v2) enthält die Plattform-Konfiguration nur noch die
+   modulunabhängige Vorbefragung; der Kurzfragebogen nach der Abgabe gehört zum
+   jeweiligen Prüfmodul (js/modules/…). */
 
 window.DEFAULT_SURVEYS = {
-  version: "standard",
+  version: "standard-v2",
   baselineScales: [
     {
       id: "leistungsmotivation",
@@ -62,40 +63,6 @@ window.DEFAULT_SURVEYS = {
       options: ["nein", "einmal ausprobiert", "gelegentlich", "regelmäßig"],
     },
   },
-
-  /* Kurzerhebung nach jeder Runde. */
-  trustItem:
-    "Wie sehr haben Sie dem Agenten in dieser Runde vertraut? (1 = gar nicht, 7 = voll und ganz)",
-
-  tlxDimensions: [
-    { id: "geistig", label: "Geistige Anforderung", frage: "Wie geistig anspruchsvoll war die Aufgabe?" },
-    { id: "zeitdruck", label: "Zeitliche Anforderung", frage: "Wie hoch war der empfundene Zeitdruck?" },
-    { id: "leistung", label: "Leistung", frage: "Wie unzufrieden sind Sie mit Ihrer Leistung? (0 = sehr zufrieden, 100 = sehr unzufrieden)" },
-    { id: "anstrengung", label: "Anstrengung", frage: "Wie sehr mussten Sie sich anstrengen?" },
-    { id: "frustration", label: "Frustration", frage: "Wie verunsichert, entmutigt oder verärgert waren Sie?" },
-  ],
-
-  /* Abschlussskala (7-stufig) in Anlehnung an Lee & See (2004). */
-  finalTrustItems: [
-    "Insgesamt habe ich dem Agenten vertraut.",
-    "Die Vorschläge des Agenten waren zuverlässig.",
-    "Ich habe die Vorschläge des Agenten kritisch geprüft, bevor ich sie übernommen habe.",
-    "Ich hätte wichtige Entscheidungen dem Agenten auch ohne eigene Prüfung überlassen.",
-    "Mein Vertrauen in den Agenten war am Ende höher als zu Beginn.",
-  ],
-
-  finalOpenQuestions: [
-    { id: "rollen", label: "Wie haben Sie die Rollenverteilung zwischen Ihnen und dem Agenten erlebt?" },
-    { id: "momente", label: "Gab es kritische Momente — Vertrauensbrüche oder positive Überraschungen? Welche?" },
-    { id: "aufgaben", label: "Welche Unterschiede haben Sie zwischen den Aufgabentypen wahrgenommen (z. B. Analyse- vs. Führungsaufgaben)?" },
-  ],
-
-  /* Offene Fragen fuer die Postkorb-Kontrollbedingung (Bearbeitung ohne KI). */
-  finalOpenQuestionsControl: [
-    { id: "vorgehen", label: "Wie sind Sie bei der eigenständigen Bearbeitung vorgegangen — was hat Ihnen geholfen, was gefehlt?" },
-    { id: "momente", label: "Gab es kritische Momente — besonders schwierige oder besonders gut laufende Aufgaben? Welche?" },
-    { id: "aufgaben", label: "Welche Unterschiede haben Sie zwischen den Aufgabentypen wahrgenommen (z. B. Analyse- vs. Führungsaufgaben)?" },
-  ],
 };
 
 /* Verwaltung der aktiven Instrumentenfassung (Standard oder Anpassung). */
@@ -126,18 +93,6 @@ window.SurveysConfig = (function () {
         !ae.competence || typeof ae.competence.label !== "string" ||
         !ae.agents || !isStrArr(ae.agents.options) || typeof ae.agents.label !== "string") {
       errs.push("aiExperience: frequency{label,options}, competence{label}, agents{label,options} erforderlich.");
-    }
-    if (typeof o.trustItem !== "string" || !o.trustItem.trim()) errs.push("trustItem: Text erforderlich.");
-    if (!Array.isArray(o.tlxDimensions) || o.tlxDimensions.length === 0 ||
-        !o.tlxDimensions.every((d) => d && SLUG.test(d.id || "") && typeof d.label === "string" && typeof d.frage === "string")) {
-      errs.push("tlxDimensions: Liste von {id (slug), label, frage}.");
-    }
-    if (!isStrArr(o.finalTrustItems)) errs.push("finalTrustItems: nichtleere Liste von Texten.");
-    for (const k of ["finalOpenQuestions", "finalOpenQuestionsControl"]) {
-      if (!Array.isArray(o[k]) || o[k].length === 0 ||
-          !o[k].every((q) => q && SLUG.test(q.id || "") && typeof q.label === "string" && q.label.trim())) {
-        errs.push(`${k}: Liste von {id (slug), label}.`);
-      }
     }
     return errs;
   }

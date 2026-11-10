@@ -8,9 +8,9 @@
    (z. B. Ollama, vLLM, Groq, Together) via OSS_BASE_URL + OSS_MODEL, optional OSS_API_KEY.
    Zeitbudget 22 s (synchrone Netlify Functions brechen bei max. 26 s ab). */
 
-const MAX_MESSAGES = 40;
-const MAX_TOTAL_CHARS = 48000;
-const MAX_SYSTEM_CHARS = 12000;
+const MAX_MESSAGES = 60;
+const MAX_TOTAL_CHARS = 120000;
+const MAX_SYSTEM_CHARS = 40000; // Prüfmodule übergeben alle Dokumente im Systemprompt
 const DEFAULT_MAX_TOKENS = 1600;
 const TIMEOUT_MS = 22000;
 

@@ -3,7 +3,8 @@
    Browser-Speicher abgesichert. */
 
 window.Store = (function () {
-  const KEY = "katp_sessions_v1";
+  const KEY = "katp_sessions_v2";
+  const LEGACY_KEY = "katp_sessions_v1"; // Sitzungen der Rundenfassung (E1–E6)
 
   function loadAll() {
     try {
@@ -49,5 +50,31 @@ window.Store = (function () {
     }
   }
 
-  return { loadAll, get, put, remove, available };
+  /* Altdaten der Rundenfassung (E1–E6) bleiben unverändert im Browser und können
+     in der Forschungsansicht gesichert werden. */
+  function legacyRaw() {
+    try { return localStorage.getItem(LEGACY_KEY); } catch { return null; }
+  }
+
+  /* Import (z. B. Sitzungen anderer Erhebungsstationen oder Ratings anderer
+     Rater:innen): Sitzungen per id zusammenführen, Ratings je Rater:in vereinigen. */
+  function importSessions(list) {
+    const all = loadAll();
+    let neu = 0, ergaenzt = 0;
+    for (const s of list) {
+      if (!s || s.schema !== 2 || !s.id) continue;
+      const i = all.findIndex((x) => x.id === s.id);
+      if (i < 0) { all.push(s); neu++; continue; }
+      const cur = all[i];
+      const curEnd = cur.task && cur.task.endedAt;
+      const base = (!curEnd && s.task && s.task.endedAt) ? s : cur;
+      base.ratings = { ...(cur.ratings || {}), ...(s.ratings || {}) };
+      base.kodierung = cur.kodierung || s.kodierung || null;
+      all[i] = base;
+      ergaenzt++;
+    }
+    return saveAll(all) ? { neu, ergaenzt } : null;
+  }
+
+  return { loadAll, get, put, remove, available, legacyRaw, importSessions };
 })();

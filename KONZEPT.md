@@ -3,7 +3,7 @@
 **Agentische Testbench für die empirische Forschung zur Interaktion von Menschen mit KI-Agenten**
 
 Wissenschaftliche Leitung: Dr. Pantaleon Fassbender · Dr. Uwe Klein
-Stand: 15. September 2026
+Stand: 10. November 2026 (modulare Fassung; frühere Rundenfassung E1–E6 vom 15. September 2026 ersetzt)
 
 ---
 
@@ -23,102 +23,99 @@ konsequent modular gebaut: Aufgabenmodule, Agentenanbieter, Autonomiegrad und
 Erhebungsinstrumente sind unabhängig voneinander variierbar (zentrale Anforderung aus
 Teil B.4 des Arbeitspapiers).
 
-## 2. Forschungsfragen (aus dem Arbeitspapier, Teil C.1)
+## 2. Modularer Aufbau und Rahmenmodell
 
-- **F1** Entscheidungsqualität nach Aufgabentyp (Planung / Durchführung / Kontrolle / Führung)
-- **F2** Vertrauensverlauf über Runden, insbesondere nach sichtbaren Agentenfehlern
-- **F3** Zusammenhang berufsbezogener Persönlichkeitsmerkmale (BIP-angelehnt) mit
-  Intensität und Qualität der Zusammenarbeit
-- **F4** Anbietervergleich Claude / GPT / Gemini
-- **F5** Wirkung des Autonomiegrads (Vorschlag vs. eigenständige Ausführung mit Kontrolle)
-- **F6** Rollenverteilung bei sachbezogenen vs. personenbezogenen Aufgaben
+Die Rundenfassung mit sechs Kurzmodulen (E1–E6) und Planspiel-Kennzahlen ist ersetzt durch
+**Prüfmodule**: in sich geschlossene Postkorbaufgaben (Unterlagen, Auftrag, Zeitansatz,
+Kurzfragebogen, Bewertungsraster), von denen eine Person in einer Sitzung genau eines
+bearbeitet — ohne Phasen oder Runden. Neue Module (Wettbewerbsanalyse,
+Angebotsbewertung …) werden als Dateien ergänzt, ohne die Plattform umzubauen.
 
-## 3. Architektur: Abbildung der sieben MVRP-Schichten
+Alle Module sind einem **übergeordneten Modell** mit den vier Dimensionen des
+Managementprozesses zugeordnet:
 
-| MVRP-Schicht (HACTLab) | Umsetzung in dieser Plattform |
+| Dimension | Leitfrage |
 |---|---|
-| **L1 User Interface** | Statische Web-Oberfläche (deutsch, ohne Framework, ohne Fremdressourcen): Startseite, Sitzungs-Runner (`study.html`), Forschungsansicht (`admin.html`) |
-| **L2 Scenario Engine** | Fiktive Organisation „NordTec GmbH" mit rundenübergreifendem Kennzahlenzustand (Budget-, Umsatz-, Risikoindex); Entscheidungen einer Runde verändern das Briefing der Folgerunde (Planspiel-Logik, Teil B.1) |
-| **L3 Task Engine** | Sechs Aufgabenmodule E.1–E.6 als strukturierte Konfigurationsdatensätze (`js/tasks-data.js`) mit Szenariotext, Eingabedaten, Bearbeitungsauftrag, Bewertungsraster und Metadaten (Managementfunktion, sach-/personenbezogen, strukturiert/offen) |
-| **L4 Workflow & Orchestration** | Rundenmaschine in `js/engine.js` + `js/study.js`: Einverständnis → Baseline → n Runden (Briefing → Bearbeitung mit Agent → Entscheidung → Kurzerhebung) → Abschlusserhebung; Autonomiegrad within-subject randomisierbar |
-| **L5 AI Integration** | Eine Netlify Function (`/api/agent`) als Agenten-Abstraktionsschicht mit einheitlicher Schnittstelle zu **Anthropic (Claude)**, **OpenAI (GPT)**, **Google (Gemini)** und einem konfigurierbaren **Open-Source-Endpunkt** (OpenAI-kompatibel, z. B. Ollama/vLLM); drei funktional unterschiedliche Agentenrollen (Analyst, Kritiker, Koordinator) ohne direkte Agent-zu-Agent-Kommunikation — Stufe 2 der HACTLab-Reifegradlogik. Zusätzlich **Postkorb-Kontrollbedingung ohne KI** (eigenständige Bearbeitung derselben Module, Basisvergleich für F1) |
-| **L6 Data Collection** | Vollständiges Interaktionsprotokoll (Prompts, Antworten, Modellversion, Zeitstempel, Latenz), Reliance-Index (heuristisch: n-Gramm-Überlappung Entscheidung ↔ Agentenbeiträge), Kurzerhebung je Runde (Vertrauen, NASA-TLX-Kurzform), Bewertungsraster (Expertenrating 1–5), Baseline- und Abschlussfragebogen |
-| **L7 Data Storage & Management** | Ausschließlich lokal im Browser der Erhebungsstation (`localStorage`), pseudonyme Teilnahmecodes; Export als JSON (vollständig) und als Excel-Arbeitsmappe (Blätter „Runden" — eine Zeile je Runde — und „Teilnehmende", erzeugt ohne Fremdbibliothek in `js/xlsx-export.js`) über die Forschungsansicht — kein Server-Speicher, keine Datenbank |
+| **Analyse** | Informationen erschließen und prüfen: Quellen sichten, Aussagekraft gewichten, Widersprüche und Muster erkennen |
+| **Planung** | Ziele, Empfehlungen und Maßnahmen ableiten und priorisieren |
+| **Durchführung** | Das Arbeitsergebnis erstellen: Urteil bilden, strukturiert und differenziert ausformulieren |
+| **Kontrolle** | Ergebnisse absichern: belegen, Zahlen prüfen — in KI-Varianten insbesondere Agentenaussagen an den Quellen verifizieren |
 
-## 4. Umsetzungsmodule (Bauplan der Plattform)
+Jedes Modul beschreibt seine Teilleistung je Dimension; jedes Rasterkriterium trägt eine
+Dimension. Daraus entstehen modulübergreifend vergleichbare **Dimensionswerte**
+(Mittel der zugeordneten Kriterien). „Kontrolle“ hat in der Mensch-KI-Forschung eine
+doppelte Bedeutung: inhaltlich (Soll-Ist-Abgleich im Gegenstand) und prozessual
+(Prüfung der KI) — daher sind KI-Fallen, falsche Tatsachenangaben, Übernahmequote und
+Prüfverhalten dieser Dimension zugeordnet.
 
-- **Modul 0 — Fundament:** Repository, Startseite, Gestaltung, Rechtsseite (Impressum +
-  Datenschutzerklärung), Lizenz, Deploy-Konfiguration.
-- **Modul 1 — Task Engine:** Aufgabenmodule E.1–E.6 mit fiktiven Daten und
-  Bewertungsrastern (je fünf Grundkriterien + modulspezifische Ergänzung, Teil E).
-- **Modul 2 — Agenten-Anbindung:** Netlify Function `/api/agent` (Anbieter Claude / GPT /
-  Gemini, Rollen-Systemprompts, Autonomiegrad-Instruktionen, Eingabevalidierung,
-  Zeitbudget < 26 s, Gemini ohne Denk-Budget).
-- **Modul 3 — Rundenmaschine:** Sitzungsaufbau (Teilnahmecode, Anbieter, Autonomieplan,
-  Rundenplan), Rundenablauf nach Teil B.3, Kennzahlen-Fortschreibung.
-- **Modul 4 — Erhebung:** Einverständnis, Baseline (BIP-angelehnte Kurzskalen — eigene
-  Items, kein Hogrefe-Originalmaterial —, KI-Vorerfahrung), Kurzerhebung je Runde
-  (Vertrauen 1–7, NASA-TLX-Kurzform 0–100), Abschlussfragebogen (Vertrauen/Reliance nach
-  Lee & See angelehnt, offene Retrospektive-Fragen). Alle Instrumente sind **modular
-  als Konfiguration** hinterlegt (`js/surveys.js`) und über den Fragebogen-Editor der
-  Forschungsansicht anpassbar (Items ergänzen/ändern, Skalen hinzufügen — z. B. das
-  Resilienz-Modul aus den Ausbaustufen); jede Sitzung protokolliert die
-  Versionskennung ihrer Instrumentenfassung (`fragebogen_version` im Export).
-- **Modul 5 — Forschungsansicht:** Sitzungsübersicht, Bewertungsraster-Eingabe
-  (Expertenrating), Datenexport JSON/CSV, Löschfunktion.
-- **Modul 6 — Dokumentation:** README, dieses Konzept, Rechtstexte gegen den Code geprüft.
+### Abbildung der MVRP-Schichten (HACTLab)
 
-## 5. Studienablauf (implementiert)
+| Schicht | Umsetzung |
+|---|---|
+| L1 User Interface | Statische Oberfläche: Startseite (Studienleitung), Sitzung, Forschungsansicht |
+| L2 Scenario Engine | Fiktive NordTec GmbH als gemeinsamer Rahmen aller Prüfmodule |
+| L3 Task Engine | Modul-Registry (`js/platform.js`) + je Modul zwei Dateien unter `js/modules/` |
+| L4 Workflow | Sitzungsablauf in `js/study.js`; Zuweisung in `js/session.js` |
+| L5 AI Integration | `/api/agent` (Anthropic, OpenAI, Google, Open Source); Varianten-Anweisungen |
+| L6 Data Collection | Protokolle, Ereignisse, Kurzfragebogen, Blind-Rating, `js/metrics.js` |
+| L7 Data Storage | localStorage der Erhebungsstation; Export XLSX/JSON, Import zum Zusammenführen |
 
-1. **Sitzung anlegen** (Startseite): Teilnahmecode (pseudonym), Bedingung
-   (between-subject: Claude / GPT / Gemini / Open-Source-Modell / **ohne KI,
-   Postkorb-Kontrollbedingung**), Autonomieplan (konstant niedrig, konstant
-   hoch oder within-subject randomisiert in zwei Blöcken; entfällt in der
-   Kontrollbedingung), Rundenzahl (3–15, Standard 6), Modulfolge (Standard:
-   E1 → E2 → E6 → E3 → E4 → E5; bei mehr Runden Vertiefungsrunden mit
-   fortgeschriebenen Kennzahlen).
-2. **Einverständnis:** Hinweis auf fiktive Daten, lokale Speicherung, Übermittlung der
-   Chat-Inhalte an den gewählten Modellanbieter; ohne Zustimmung keine Sitzung.
-3. **Baseline:** Kurzskalen zu Leistungsmotivation, Flexibilität, Durchsetzungsstärke,
-   Belastbarkeit (je 3 Items, 7-stufig, eigene Formulierungen in Anlehnung an die
-   BIP-Konstruktdefinitionen) + KI-Vorerfahrung (Kontrollvariable, Teil C.2).
-4. **Runden 1…n:** Briefing (inkl. Kennzahlenlage) → Bearbeitung mit Agent (Chat;
-   bei hoher Autonomie erstellt der Agent unaufgefordert einen vollständigen Entwurf,
-   bei niedriger liefert er nur Vorschläge auf Anfrage) → finale Entscheidung der
-   Person (Freitext) → automatischer Reliance-Index → Kurzerhebung → Kennzahlen-Update.
-5. **Abschluss:** Vertrauens-/Reliance-Skala, offene Fragen (Rollenverteilung, kritische
-   Momente, Aufgabentyp-Unterschiede), Dank-Seite.
-6. **Auswertung:** Forschungsansicht — Expertenrating je Runde nach Bewertungsraster,
-   Export, qualitative Codierung der Interaktionsprotokolle extern (JSON).
+### Zuordnung des Moduls Mitarbeiterbewertung (MB-NORDTEC-01)
+
+| Dimension | Teilleistung | Rasterkriterien | Weitere Messgrößen |
+|---|---|---|---|
+| Analyse | Sieben Dokumente sichten, Widersprüche erkennen und einordnen, Quellen nach Stichprobe, Aktualität und Perspektive gewichten, Einzelfall von Muster trennen (Gliederungspunkt 4) | Erkennen der Widersprüche; Gewichtung der Quellen | Erkannte Widersprüche W1–W5; vermiedene Mensch-Fallen M1–M3 |
+| Planung | Potenzialaussage (ja/bedingt/nein) und 2–3 priorisierte Maßnahmen (Punkt 5) | Empfehlung und Maßnahmen | — |
+| Durchführung | Bewertung nach Gliederung und Länge verfassen, Verkäufer- und Führungsrolle trennen, Kontext berücksichtigen (Punkte 1–3) | Differenziertheit; Form und Struktur | Bearbeitungszeit |
+| Kontrolle | Belege und korrekte Zahlen, Soll-Ist-Abgleich der Zielvereinbarungen, Prüfung der KI-Aussagen | Belegarbeit | Berücksichtigte KI-Fallen K1–K3; falsche Tatsachenangaben; Übernahmequote; Prompts/Rückfragen/Korrekturen; Kurzfragebogen Item 2 |
+
+## 3. Forschungsfragen (angepasst an die modulare Fassung)
+
+- **F1** Ergebnisqualität je Dimension (Analyse/Planung/Durchführung/Kontrolle) nach Variante
+- **F2** Vertrauen und Prüfverhalten ↔ Übernahme, falsche Tatsachenangaben, KI-Fallen
+- **F3** Persönlichkeitsmerkmale (Vorbefragung) ↔ Intensität und Qualität der Zusammenarbeit
+- **F4** Anbietervergleich Claude / GPT / Gemini / Open Source
+- **F5** Autonomiegrad ↔ Qualität, Bearbeitungszeit, Übernahmequote, Arbeitslast
+- **F6** Rollenverteilung und Fehlerbilder in personen- vs. sachbezogenen Modulen
+
+## 4. Studienvarianten
+
+| Variante | Agent |
+|---|---|
+| Ohne KI | keiner (Postkorb) |
+| Autonomie niedrig | reine Unterstützung: Fragen, Belegstellen, Prüfung auf Anfrage; verfasst keinen Endtext |
+| Autonomie hoch | übernimmt die ganze Aufgabe: eigenständige vollständige Fassung zu Beginn, Überarbeitung auf Wunsch, Übernahme-Knopf |
+
+Standardisierung (Unterlagen Dr. Klein): identische Dokumente, Reihenfolge und Zeitlimit für
+alle; zufällige Zuweisung (ausgewogen je Gerät); in KI-Varianten gleiches Modell, gleiche
+Basis-Systemanweisung, gleicher Dokumentzugang — die Plattform ergänzt nur die
+Varianten-Anweisung. Der Studienleitungsteil (Auflösung, Musterlösung) wird nie an den
+Agenten übermittelt.
+
+## 5. Sitzungsablauf (implementiert)
+
+1. Sitzung anlegen (Teilnahmecode, Prüfmodul, Variante/Zufall, Anbieter, Vorbefragung ja/nein).
+2. Einverständnis.
+3. Vorbefragung (optional): BIP-angelehnte Kurzskalen, KI-Vorerfahrung.
+4. Instruktion inkl. variantenspezifischem Hinweis; Start der Zeitmessung.
+5. Bearbeitung: Reiter Instruktion/Dok. 1–7, ggf. KI-Assistent, Endtext mit Wortzähler,
+   Countdown (weiches Limit: Hinweis bei Ablauf, Überziehung protokolliert).
+6. Endgültige Abgabe → Kurzfragebogen des Moduls → Ende.
+7. Auswertung: Blind-Rating (≥ 2 Rater:innen), Protokollcodierung, Export.
 
 ## 6. Operationalisierungen
 
-- **Reliance-Index** (Teil F.5): Anteil der Wort-Bigramme der finalen Entscheidung, die
-  in den Agentenbeiträgen derselben Runde vorkommen (0–1). Heuristik zur Erstsichtung;
-  manuelle Codierung bleibt Referenzverfahren.
-- **Entscheidungsqualität:** Expertenrating 1–5 je Rubrik-Kriterium (Vollständigkeit,
-  Konsistenz, Nachvollziehbarkeit, Angemessenheit, Effizienz + Modulkriterium) in der
-  Forschungsansicht, nachträglich erfassbar; kriterienbasiert über den
-  verhaltensverankerten Bewertungsleitfaden (Definition + Anker für die Stufen 1/3/5
-  je Kriterium, `RATING_CRITERIA` in `js/tasks-data.js`), der bei der Eingabe direkt
-  am jeweiligen Kriterium angezeigt wird.
-- **Ökonomischer Erfolg:** vereinfachtes Planspielmodell — Budget-, Umsatz- und
-  Risikoindex werden je Runde aus Ratingmittel (falls vorhanden) bzw. neutral
-  fortgeschrieben; ausdrücklich als Kontextsignal, nicht als validiertes Erfolgsmaß.
-- **Risikoeinschätzung:** Vor Abgabe Selbsteinschätzung der Erfolgswahrscheinlichkeit
-  (0–100 %), Abgleich in der Auswertung (Teil C.4).
-- **Beanspruchung:** NASA-TLX-Kurzform (Geistige Anforderung, Zeitdruck, Leistung,
-  Anstrengung, Frustration; 0–100) nach jeder Runde (Hart & Staveland, 1988).
-- **Vertrauen:** Einzelitem je Runde (7-stufig) für Verlaufsanalysen (F2);
-  Abschlussskala in Anlehnung an Lee & See (2004).
-- **Versionierung** (Teil F.5): Modell-ID und Zeitstempel jeder API-Antwort werden
-  mitprotokolliert, da sich Agentenverhalten zwischen Modellversionen ändert.
-- **Psycholinguistik:** Der Excel-Export enthält ein Blatt „Texte" (eine Zeile je
-  Texteinheit mit Metadaten und Textspalte) für Analysen mit LIWC-22 o. ä. —
-  Personen- und Agentenbeiträge getrennt ausgewiesen, sodass neben Merkmalen der
-  Teilnehmersprache auch Sprachangleichung (Language Style Matching) über die
-  Runden untersucht werden kann; automatisch erzeugte Arbeitsaufträge (Autonomie
-  hoch) sind markiert (`auto = 1`) und vor der Analyse auszuschließen.
+- **Ergebnisqualität:** Raster des Moduls (6 Kriterien × 1–5, Summe 6–30), Mittel über
+  Rater:innen; Dimensionswerte; Auszählungen (W, K, M); falsche Tatsachenangaben getrennt.
+- **Übernahmequote:** Anteil der Sätze des Endtexts (≥ 4 Wörter), die normalisiert
+  wortgleich („unverändert“) bzw. zu ≥ 80 % ihrer Wort-Bigramme („weitgehend“) in den
+  Agentenbeiträgen vorkommen. Heuristik; Referenz bleibt manuelle Codierung.
+- **Interaktion:** Prompts automatisch; Rückfragen und Korrekturen per Protokollcodierung.
+- **Prozess:** Bearbeitungszeit, Überziehung, Verweildauer je Dokument, Einfügen ins
+  Textfeld, Nutzung des Übernahme-Knopfs, Modellversion je Antwort.
+- **Kurzfragebogen** (1–5): Vertrauen, Prüfverhalten (nur KI), Anstrengung, Zeitdruck, Zufriedenheit.
+- **Psycholinguistik:** Blatt „Texte“ (Chat Person/Agent, Endtext) für LIWC-22 inkl.
+  Language Style Matching.
 
 ## 7. Datenschutz und Ethik (implementiertes Verhalten)
 
@@ -127,7 +124,7 @@ Teil B.4 des Arbeitspapiers).
 - Erhebungsdaten liegen **nur lokal** im Browser der Erhebungsstation; kein Konto, kein
   Server-Speicher, keine Cookies, keine Reichweitenmessung, keine Fremdressourcen.
 - An den jeweils gewählten Modellanbieter gehen ausschließlich Aufgabenkontext und
-  Chat-Nachrichten der laufenden Runde — keine Fragebogenantworten, kein Teilnahmecode.
+  Chat-Nachrichten der laufenden Sitzung (Studienleitungsunterlagen nie) — keine Fragebogenantworten, kein Teilnahmecode.
 - Teilnahmecodes sind pseudonym; die Zuordnungsliste führt die Studienleitung außerhalb
   der Plattform.
 - Details: `legal.html` (Impressum und Datenschutzerklärung).
@@ -135,7 +132,8 @@ Teil B.4 des Arbeitspapiers).
 ## 8. Ausbaustufen (Grow by Extension)
 
 1. **Fehlerinduktion** für F2: kontrollierte, protokollierte Fehlmanipulation einzelner
-   Agentenantworten in vordefinierten Runden.
+   Agentenantworten an vordefinierten Stellen einer Sitzung (ergänzend zu den in die
+   Module eingebauten KI-Fallen).
 2. **Team-Modus** (HACTLab Stufe 3): mehrere Menschen + mehrere Agentenrollen,
    geteilter Zustand (erfordert Server-Speicher und erweiterte Rechtstexte).
 3. **Resilienz-Modul:** Kurzskalen aus dem Resilienz-Review (z. B. BRS-artige eigene

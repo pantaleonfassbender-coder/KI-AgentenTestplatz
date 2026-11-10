@@ -1,67 +1,127 @@
-/* Startseite: vollständige Moduldarstellung + Sitzungsanlage. */
+/* Startseite: Rahmenmodell, Varianten, Sitzungsanlage, Modulkatalog. */
 (function () {
-  // Aufgabenmodule im Volltext rendern
-  const liste = document.getElementById("modulListe");
-  for (const id of Object.keys(window.TASK_MODULES)) {
-    const m = window.TASK_MODULES[id];
-    const panel = document.createElement("div");
-    panel.className = "panel";
+  const $ = (id) => document.getElementById(id);
+  const K = window.KATP;
+  const { el } = K;
 
-    const tag = document.createElement("div");
-    tag.className = "tag";
-    tag.textContent =
-      `${m.id} · Managementfunktion: ${m.funktion} · ${m.aufgabentyp} · ` +
-      `${m.struktur} · Richtwert ${m.dauerMin} Min.`;
+  // Dimensionen
+  const dimBody = $("dimTabelle").querySelector("tbody");
+  for (const id of K.DIM_IDS) {
+    const tr = el("tr");
+    tr.append(el("th", null, K.DIMENSIONEN[id].name), el("td", null, K.DIMENSIONEN[id].def));
+    dimBody.appendChild(tr);
+  }
 
-    const h = document.createElement("h3");
-    h.textContent = `${m.id} — ${m.titel}`;
-
-    const sz = document.createElement("p");
-    sz.textContent = m.szenario;
-
-    const tbl = document.createElement("table");
-    for (const [k, v] of m.eingabedaten) {
-      const tr = document.createElement("tr");
-      const th = document.createElement("th");
-      th.textContent = k;
-      const td = document.createElement("td");
-      td.textContent = v;
-      tr.append(th, td);
-      tbl.appendChild(tr);
+  // Matrix Prüfmodul × Dimension
+  const matrix = $("matrix");
+  const thead = el("thead");
+  const htr = el("tr");
+  htr.appendChild(el("th", null, "Prüfmodul"));
+  for (const id of K.DIM_IDS) htr.appendChild(el("th", null, K.DIMENSIONEN[id].name));
+  thead.appendChild(htr);
+  matrix.appendChild(thead);
+  const mbody = el("tbody");
+  for (const m of K.aktiveModule()) {
+    const tr = el("tr");
+    const th = el("th");
+    th.append(el("div", null, m.titel), el("div", "status", `${m.kennung} · ${m.gegenstandsbereich} · ${m.aufgabentyp}`));
+    tr.appendChild(th);
+    for (const id of K.DIM_IDS) {
+      const td = el("td");
+      td.append(el("div", null, m.dimensionen[id].teilleistung), el("div", "status", m.dimensionen[id].gliederung));
+      tr.appendChild(td);
     }
+    mbody.appendChild(tr);
+  }
+  for (const g of K.GEPLANT) {
+    const tr = el("tr", "geplant");
+    const th = el("th");
+    th.append(el("div", null, g.titel), el("div", "status", `in Vorbereitung · ${g.gegenstandsbereich} · ${g.aufgabentyp}`));
+    tr.appendChild(th);
+    const td = el("td", "status", "Zuordnung folgt mit dem Modul.");
+    td.colSpan = K.DIM_IDS.length;
+    tr.appendChild(td);
+    mbody.appendChild(tr);
+  }
+  matrix.appendChild(mbody);
 
-    const auftrag = document.createElement("div");
-    auftrag.className = "hinweis";
-    const b = document.createElement("strong");
-    b.textContent = "Bearbeitungsauftrag: ";
-    auftrag.append(b, document.createTextNode(m.auftrag));
+  // Varianten
+  const vBody = $("variantenTabelle").querySelector("tbody");
+  for (const v of Object.values(K.VARIANTEN)) {
+    const tr = el("tr");
+    tr.append(el("th", null, v.name), el("td", null, v.beschreibung));
+    vBody.appendChild(tr);
+  }
 
-    const raster = document.createElement("p");
-    const rb = document.createElement("strong");
-    rb.textContent = "Bewertungsraster (je 1–5): ";
-    raster.append(rb, document.createTextNode(m.raster.join(" · ")));
+  // Formular
+  const modSel = $("modul");
+  for (const m of K.aktiveModule()) {
+    const op = el("option", null, `${m.titel} (${m.kennung}, ${m.zeit.richtMin}–${m.zeit.limitMin} Min.)`);
+    op.value = m.id;
+    modSel.appendChild(op);
+  }
+  const varSel = $("variante");
+  const zuf = el("option", null, "Zufällig zuweisen (ausgewogen je Gerät und Modul)");
+  zuf.value = "zufall";
+  varSel.appendChild(zuf);
+  for (const v of Object.values(K.VARIANTEN)) {
+    const op = el("option", null, `${v.name} — ${v.kurz}`);
+    op.value = v.id;
+    varSel.appendChild(op);
+  }
+  const syncProvider = () => {
+    $("provider").disabled = varSel.value === "ohne_ki";
+  };
+  varSel.addEventListener("change", syncProvider);
+  syncProvider();
 
-    panel.append(tag, h, sz, tbl, auftrag, raster);
+  // Modulkatalog (Instruktion + Unterlagen, aufklappbar)
+  const liste = $("modulListe");
+  for (const m of K.aktiveModule()) {
+    const panel = el("div", "panel");
+    panel.appendChild(el("div", "tag", `${m.kennung} · ${m.gegenstandsbereich} · ${m.aufgabentyp} · ` +
+      `${m.zeit.richtMin}–${m.zeit.limitMin} Min. · ${m.woerter.min}–${m.woerter.max} Wörter · ` +
+      `Aufgabengestaltung: ${m.autorin} (${m.stand})`));
+    panel.appendChild(el("h3", null, `${m.titel} — ${m.untertitel}`));
+    const det = el("details");
+    det.appendChild(el("summary", null, mod2Summary(m)));
+    const ins = el("article", "dokument");
+    ins.appendChild(el("h3", null, m.instruktion.titel));
+    K.renderBlocks(m.instruktion.inhalt, ins);
+    det.appendChild(ins);
+    for (const d of m.dokumente) det.appendChild(K.renderDokument(d));
+    panel.appendChild(det);
+    liste.appendChild(panel);
+  }
+  for (const g of K.GEPLANT) {
+    const panel = el("div", "panel geplant");
+    panel.appendChild(el("div", "tag", `in Vorbereitung · ${g.gegenstandsbereich} · ${g.aufgabentyp}`));
+    panel.appendChild(el("h3", null, g.titel));
     liste.appendChild(panel);
   }
 
-  const speicherStatus = document.getElementById("speicherStatus");
-  if (!window.Store.available()) {
-    speicherStatus.textContent =
-      "Achtung: Browser-Speicher nicht verfügbar (privates Fenster?). Sitzungen können nicht gespeichert werden.";
-    speicherStatus.classList.add("fehler");
+  function mod2Summary(m) {
+    return `Instruktion und ${m.dokumente.length} Dokumente anzeigen`;
   }
 
-  document.getElementById("setupForm").addEventListener("submit", (ev) => {
+  if (!window.Store.available()) {
+    $("speicherStatus").textContent =
+      "Achtung: Browser-Speicher nicht verfügbar (privates Fenster?). Sitzungen können nicht gespeichert werden.";
+    $("speicherStatus").classList.add("fehler");
+  }
+
+  $("setupForm").addEventListener("submit", (ev) => {
     ev.preventDefault();
-    const status = document.getElementById("setupStatus");
-    const code = document.getElementById("code").value.trim();
+    const status = $("setupStatus");
+    const code = $("code").value.trim();
     if (!code) { status.textContent = "Bitte Teilnahmecode angeben."; status.classList.add("fehler"); return; }
-    const session = window.Engine.createSession({
+    if (!modSel.value) { status.textContent = "Kein Prüfmodul verfügbar."; status.classList.add("fehler"); return; }
+    const session = window.Session.create({
       code,
-      provider: document.getElementById("provider").value,
-      autonomyPlan: document.getElementById("autonomyPlan").value,
-      rounds: parseInt(document.getElementById("rounds").value, 10) || 6,
+      moduleId: modSel.value,
+      variante: varSel.value,
+      provider: $("provider").value,
+      vorbefragung: $("vorbefragung").checked,
     });
     if (!window.Store.put(session)) {
       status.textContent = "Speichern fehlgeschlagen — Browser-Speicher nicht verfügbar.";
